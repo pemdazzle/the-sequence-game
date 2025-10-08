@@ -1,4 +1,4 @@
-// --- script.js: The Finalized Game Logic (Data Loading FIXED) ---
+// --- script.js: The Finalized Game Logic ---
 
 // 1. Initial Setup and Constants
 const LAUNCH_DATE = new Date('2025-10-01');
@@ -184,7 +184,7 @@ async function loadDailyPuzzle() {
     renderChances(); 
 }
 
-// --- 5. Rendering and UI Handlers ---
+// --- 5. Rendering and UI Handlers (Game Core) ---
 
 function renderPuzzle(puzzle) {
     // Clear any feedback colors or messages
