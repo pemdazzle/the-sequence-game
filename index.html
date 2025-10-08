@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <title>The Sequence</title>
+    <title>Sequence</title>
     <link rel="stylesheet" href="style.css">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -12,8 +12,7 @@
 <body>
     
     <header id="global-header">
-        <h1>The Sequence</h1>
-        <p id="tagline">Unravel the pattern.</p>
+        <h1>Sequence</h1> <p id="tagline">Unravel the pattern.</p>
     </header>
 
     <div id="icon-bar">
@@ -30,16 +29,13 @@
 
         <div id="sequence-box" class="floating-box">
             <div id="sequence-display" class="sequence">
-                <div class="tile">10</div>
-                <div class="tile">189</div>
-                <div class="tile">17</div>
-                <div class="tile">567</div>
+                <div class="tile">0</div>
+                <div class="tile">0</div>
+                <div class="tile">0</div>
+                <div class="tile">0</div>
                 <div id="guess-target" class="tile guess-target">?</div>
             </div>
         </div>
-
-        <div id="feedback-history" style="display: none;">
-            </div>
 
         <h2>Options</h2>
         <div id="options-pool" class="options">
@@ -47,14 +43,20 @@
 
         <div id="action-area">
              <span id="hint-icon" class="icon action-icon" title="Get a Hint"><i class="fas fa-magic"></i></span>
-            <button id="submit-guess" disabled>Submit Guess</button>
             <span id="give-up-icon" class="icon action-icon flag" title="Give Up"><i class="fas fa-flag"></i></span>
         </div>
         
         <p id="message"></p>
-        
-        <div id="archive-link-container" style="display: none;">
-            </div>
+    </div>
+    
+    <div id="tutorial-modal" class="modal">
+        <div class="modal-content">
+            <h2>Welcome to Sequence!</h2>
+            <div id="tutorial-text-box">
+                </div>
+            <button id="tutorial-next-button">Next Step</button>
+            <button id="tutorial-skip-button" class="skip-button">Skip Tutorial</button>
+        </div>
     </div>
     
     <script src="script.js"></script>
