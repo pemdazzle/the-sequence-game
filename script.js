@@ -26,58 +26,30 @@ const tutorialNextButton = document.getElementById('tutorial-next-button');
 const tutorialSkipButton = document.getElementById('tutorial-skip-button');
 
 // --- TUTORIAL CONTENT (Content remains the same) ---
-const TUTORIAL_STEPS = [
-    {
-        title: "Rule 1: The Basic Game",
-        content: "<p>The puzzle shows four numbers, followed by a **question mark**. Your job is to guess the number that belongs where the question mark is.</p><p>You must choose an answer from the **six options** below. You get **three chances**!</p>"
-    },
-    {
-        title: "Rule 2: The Interwoven Secret 🤫",
-        content: "<h3>Pay attention! This is the most important rule.</h3><p>The numbers don't follow just *one* sequence. They follow **two separate sequences** that are *interwoven* (or zipped up) together.</p><p style='color: #4a90e2; font-weight: bold;'>The 1st, 3rd, and the 5th (Answer) number form SEQUENCE A.</p><p style='color: #e27d60; font-weight: bold;'>The 2nd and 4th number form SEQUENCE B (distractor sequence).</p>"
-    },
-    {
-        title: "Rule 3: What the Colors Mean",
-        content: "<p>After you guess, you get feedback:</p><ul><li><span style='color: #6aaa64; font-weight: bold;'>GREEN:</span> You solved the Sequence A rule correctly.</li><li><span style='color: #e27d60; font-weight: bold;'>GOLD:</span> You found a pattern, but applied it to the **wrong sequence** (Sequence B), or found a simpler, non-target rule. (This is the salmon color!)</li><li><span style='color: #787c7e; font-weight: bold;'>GREY:</span> Your guess had no relation to the sequences.</li></ul>"
-    },
-    {
-        title: "Let's Play!",
-        content: "<p>Look closely at the 1st and 3rd number to find **Sequence A**. Click the option tile you think is correct to **submit your guess immediately**!</p><p>Click the **'Start Game'** button to begin today's puzzle.</p>"
-    }
-];
+// --- TUTORIAL CONTENT (Simplified for single-panel display) ---
+// This content is now largely structural HTML in index.html, 
+// but we keep the header for organizational consistency.
+// The TUTORIAL_STEPS array is no longer used by the display logic.
 
 // --- 2. Tutorial Logic (for '?' Icon) ---
+// Simplified logic to just show/hide the single modal panel.
 
 function showTutorial() {
-    tutorialStep = 0;
-    tutorialModal.style.display = 'flex';
-    updateTutorialStep();
-}
-
-function updateTutorialStep() {
-    if (tutorialStep < TUTORIAL_STEPS.length) {
-        const step = TUTORIAL_STEPS[tutorialStep];
-        tutorialTextBox.innerHTML = `<h3>${step.title}</h3>${step.content}`;
-        
-        if (tutorialStep === TUTORIAL_STEPS.length - 1) {
-            tutorialNextButton.textContent = "Start Game";
-        } else {
-            tutorialNextButton.textContent = "Next Step";
-        }
-    } else {
-        closeTutorial();
-    }
+    tutorialModal.style.display = 'flex'; // Show the modal
+    // No need to track steps
 }
 
 function closeTutorial() {
-    tutorialModal.style.display = 'none';
-    if (tutorialStep > 0) { 
-        localStorage.setItem('hasSeenTutorial', 'true');
-    }
+    tutorialModal.style.display = 'none'; // Hide the modal
+    localStorage.setItem('hasSeenTutorial', 'true');
 }
 
+// Rename this function to reflect its new purpose (closing the panel)
 function handleTutorialNext() {
-    if (tutorialStep === TUTORIAL_STEPS.length - 1) {
-        closeTutorial();
+    closeTutorial();
+}
+
+// ... the rest of the script.js file continues from here ...
     } else {
         tutorialStep++;
         updateTutorialStep();
