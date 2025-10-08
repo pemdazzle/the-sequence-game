@@ -12,10 +12,10 @@ const optionsPool = document.getElementById('options-pool');
 const sequenceDisplay = document.getElementById('sequence-display');
 const guessTarget = document.getElementById('guess-target');
 const messageElement = document.getElementById('message');
-const chanceIndicators = document.getElementById('chance-indicators'); // New
+const chanceIndicators = document.getElementById('chance-indicators');
 
 // Icon DOM Elements
-const rulesIcon = document.getElementById('rules-icon'); // ? icon
+const rulesIcon = document.getElementById('rules-icon');
 const archiveIcon = document.getElementById('archive-icon');
 const settingsIcon = document.getElementById('settings-icon');
 
@@ -25,7 +25,7 @@ const tutorialTextBox = document.getElementById('tutorial-text-box');
 const tutorialNextButton = document.getElementById('tutorial-next-button');
 const tutorialSkipButton = document.getElementById('tutorial-skip-button');
 
-// --- TUTORIAL CONTENT (for the '?' icon) ---
+// --- TUTORIAL CONTENT ---
 const TUTORIAL_STEPS = [
     {
         title: "Rule 1: The Basic Game",
@@ -37,14 +37,13 @@ const TUTORIAL_STEPS = [
     },
     {
         title: "Rule 3: What the Colors Mean",
-        content: "<p>After you guess, you get feedback:</p><ul><li><span style='color: #6aaa64; font-weight: bold;'>GREEN:</span> You solved the Sequence A rule correctly.</li><li><span style='color: #c9b458; font-weight: bold;'>GOLD:</span> You found a pattern, but applied it to the **wrong sequence** (Sequence B), or found a simpler, non-target rule.</li><li><span style='color: #787c7e; font-weight: bold;'>GREY:</span> Your guess had no relation to the sequences.</li></ul>"
+        content: "<p>After you guess, you get feedback:</p><ul><li><span style='color: #6aaa64; font-weight: bold;'>GREEN:</span> You solved the Sequence A rule correctly.</li><li><span style='color: #e27d60; font-weight: bold;'>GOLD:</span> You found a pattern, but applied it to the **wrong sequence** (Sequence B), or found a simpler, non-target rule. (This is the salmon color!)</li><li><span style='color: #787c7e; font-weight: bold;'>GREY:</span> Your guess had no relation to the sequences.</li></ul>"
     },
     {
         title: "Let's Play!",
-        content: "<p>Look closely at the 1st and 3rd number to find **Sequence A**. Click the option tile you think is correct to submit your guess!</p><p>Click the **'Start Game'** button to begin today's puzzle.</p>"
+        content: "<p>Look closely at the 1st and 3rd number to find **Sequence A**. Click the option tile you think is correct to **submit your guess immediately**!</p><p>Click the **'Start Game'** button to begin today's puzzle.</p>"
     }
 ];
-// Note: We use the system font stack for simplicity in the commit, though the CSS imports Poppins
 
 // --- 2. Tutorial Logic (for '?' Icon) ---
 
@@ -71,7 +70,6 @@ function updateTutorialStep() {
 
 function closeTutorial() {
     tutorialModal.style.display = 'none';
-    // Only set 'hasSeenTutorial' if user finished or skipped, not if they opened it mid-game
     if (tutorialStep > 0) { 
         localStorage.setItem('hasSeenTutorial', 'true');
     }
@@ -89,7 +87,10 @@ function handleTutorialNext() {
 // --- 3. Data Fetching and Puzzle Selection ---
 
 async function loadDailyPuzzle() {
-    // We remove the auto-show tutorial here; it's now attached to the '?' icon.
+    // Check if the user has seen the tutorial. If not, show it.
+    if (!localStorage.getItem('hasSeenTutorial')) {
+        showTutorial();
+    }
     
     try {
         const response = await fetch(PUZZLE_FILE);
@@ -124,19 +125,19 @@ function renderPuzzle(puzzle) {
         tile.textContent = puzzle.sequence_display[index];
     });
 
-    // B. Render the selectable options pool (FIX for missing options)
+    // B. Render the selectable options pool (Distractors and correct answer loading here)
     optionsPool.innerHTML = ''; 
     currentPuzzle.options_pool.forEach(option => {
         const tile = document.createElement('div');
         tile.classList.add('tile', 'option-tile');
         tile.textContent = option.value;
         tile.dataset.value = option.value; 
-        // IMPORTANT: Guess is now submitted on click
+        // Guess is now submitted on click (No Submit Button needed)
         tile.addEventListener('click', handleSubmit); 
         optionsPool.appendChild(tile);
     });
     
-    // Set initial message
+    // Clear initial message
     messageElement.textContent = ``;
 }
 
@@ -147,7 +148,7 @@ function renderChances() {
     for (let i = 0; i < MAX_GUESSES; i++) {
         const span = document.createElement('span');
         span.classList.add('lightbulb');
-        // Font Awesome lightbulb
+        // Font Awesome lightbulb icon
         span.innerHTML = '<i class="fas fa-lightbulb"></i>'; 
         
         if (i < remaining) {
@@ -163,11 +164,10 @@ function renderChances() {
 function handleSubmit(event) {
     if (guesses.length >= MAX_GUESSES) return;
 
-    // The selected tile IS the event target since we moved the listener
+    // The selected tile IS the event target
     const selectedTile = event.currentTarget;
     const guessValue = parseInt(selectedTile.dataset.value);
 
-    // Find the option object that matches the selected value
     const optionObj = currentPuzzle.options_pool.find(opt => opt.value === guessValue);
     
     let feedback = 'NO_MATCH'; 
@@ -187,11 +187,15 @@ function handleSubmit(event) {
 
     // Update UI and check win/loss conditions
     if (feedback === 'CORRECT') {
-        messageElement.textContent = "CORRECT! You solved today's sequence!";
+        messageElement.textContent = "CORRECT! You solved today's sequence! Share your results!";
         disableOptions();
+        guessTarget.classList.add('feedback-green');
+        guessTarget.textContent = guessValue;
     } else if (guesses.length >= MAX_GUESSES) {
         messageElement.textContent = `Game Over! The correct answer was ${currentPuzzle.correct_answer}.`;
         disableOptions();
+        guessTarget.classList.add('feedback-grey'); // Indicate failed puzzle
+        guessTarget.textContent = currentPuzzle.correct_answer;
     } else if (feedback === 'RULE_MATCH') {
         messageElement.textContent = "GOLD! Close, but try the interwoven rule.";
     } else {
@@ -199,10 +203,7 @@ function handleSubmit(event) {
     }
     
     // Finalize UI state
-    guessTarget.textContent = '?';
     
-    // Optional: Hide the submit button area since it's now tile-click based
-    document.getElementById('action-area').style.display = 'none';
 }
 
 function disableOptions() {
@@ -211,12 +212,12 @@ function disableOptions() {
 
 // --- 5. Event Listeners and Initialization ---
 
-// 1. Connect the '?' icon to the tutorial
+// Connect the '?' icon to the tutorial
 rulesIcon.addEventListener('click', showTutorial);
 tutorialNextButton.addEventListener('click', handleTutorialNext);
 tutorialSkipButton.addEventListener('click', closeTutorial);
 
-// 2. Placeholder actions for other icons
+// Placeholder actions for other icons
 archiveIcon.addEventListener('click', () => {
     alert("Archivist is a premium feature! (Placeholder)");
 });
@@ -226,10 +227,12 @@ settingsIcon.addEventListener('click', () => {
     alert("Settings: Hard mode coming soon! (Placeholder)"); 
 });
 
-// 3. Optional: Give up flag
+// Optional: Give up flag
 document.getElementById('give-up-icon').addEventListener('click', () => {
     alert(`The correct answer was ${currentPuzzle.correct_answer}. You gave up.`);
     disableOptions();
+    guessTarget.classList.add('feedback-grey');
+    guessTarget.textContent = currentPuzzle.correct_answer;
 });
 
 
