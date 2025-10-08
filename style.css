@@ -172,8 +172,8 @@ h2 {
 
 .modal {
     display: none; /* IMPORTANT: Hidden by default. JS shows it */
-    position: fixed; /* CRITICAL: Stays in place, overlays everything */
-    z-index: 100; /* Sits on top */
+    position: fixed !important; /* CRITICAL FIX: Forces the overlay position */
+    z-index: 1000 !important; /* CRITICAL FIX: Ensures it's above everything else */
     left: 0;
     top: 0;
     width: 100%; 
@@ -254,32 +254,4 @@ h2 {
     width: 100%;
     margin-top: 25px;
     text-align: center;
-}
-
-
-/* 10. Mobile Responsiveness */
-@media (max-width: 600px) {
-    
-    #game-container {
-        max-width: 100%;
-        padding: 10px;
-        margin: 0 5px; 
-    }
-
-    .tile {
-        width: 40px; 
-        height: 40px;
-        line-height: 40px;
-        font-size: 1.0em; 
-        border-radius: 6px; 
-        flex-grow: 1; 
-    }
-    
-    .sequence, .options {
-        gap: 5px;
-    }
-
-    #global-header h1 {
-        font-size: 1.8em;
-    }
 }
