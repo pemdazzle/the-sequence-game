@@ -6,9 +6,9 @@
     --color-text-dark: #333333; /* Dark text for titles */
     --color-text-light: #888888; /* Light gray for taglines and subtle text */
     --color-green: #6aaa64; /* Solved/Correct */
-    --color-gold: #c9b458; /* Rule Match */
+    --color-gold: #e27d60; /* Adjusted: Using the salmon/coral color for GOLD feedback/alerts */
     --color-grey: #787c7e; /* No Match */
-    --color-blue-action: #4a90e2; /* For buttons and active icons */
+    --color-blue-action: #4a90e2; /* For active icons */
     --color-flag-red: #e74c3c; /* For the "Give Up" flag */
 }
 
@@ -19,7 +19,7 @@ body {
     flex-direction: column; /* Stack header and game vertically */
     align-items: center;
     min-height: 100vh;
-    background-color: var(--color-background);
+    background-color: var(--color-background); /* Subtle gray background */
     padding: 20px 0 50px 0;
     margin: 0;
     color: var(--color-text-dark);
@@ -40,7 +40,7 @@ body {
 
 #tagline {
     font-size: 0.9em;
-    color: var(--color-text-light);
+    color: var(--color-text-light); /* Lighter grey for tagline */
     margin-top: 5px;
     font-weight: 400;
 }
@@ -71,9 +71,9 @@ body {
     text-align: center;
     padding: 20px;
     border-radius: 12px;
-    /* Soft shadow effect for the 'floating' look */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    background: var(--color-white);
+    /* Soft shadow effect for the 'floating' white box */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); 
+    background: var(--color-white); /* Pure white background */
 }
 
 .floating-box {
@@ -89,7 +89,6 @@ body {
     display: flex;
     justify-content: space-between;
     gap: 8px;
-    /* Removed margin-bottom here as containers handle spacing */
 }
 
 h2 {
@@ -121,9 +120,8 @@ h2 {
 }
 
 /* Selected option visual feedback */
-.option-tile.selected {
-    border: 2px solid var(--color-blue-action);
-    transform: scale(1.05);
+.option-tile:hover {
+    transform: scale(1.02);
 }
 
 /* 6. Lightbulb Indicators */
@@ -136,35 +134,20 @@ h2 {
 }
 
 .lightbulb-on {
-    color: gold;
+    color: gold; /* Yellow for active */
 }
 
 .lightbulb-off {
-    color: var(--color-text-light);
+    color: var(--color-text-light); /* Grey for used */
 }
 
-/* 7. Action Area (Hint/Submit/Flag) */
+/* 7. Action Area (Hint/Flag) */
 #action-area {
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: space-between;
     margin-top: 20px;
-}
-
-#submit-guess {
-    flex-grow: 1; /* Makes button fill most of the space */
-    padding: 12px 25px;
-    background-color: var(--color-blue-action);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.1em;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-#submit-guess:disabled {
-    background-color: #a0c9f1;
-    cursor: not-allowed;
+    padding: 0 10px;
 }
 
 .action-icon {
@@ -181,25 +164,18 @@ h2 {
 /* 8. Feedback Colors (Wordle-like) */
 
 .feedback-green { background-color: var(--color-green); color: white; }
-.feedback-gold { background-color: var(--color-gold); color: white; }
+.feedback-gold { background-color: var(--color-gold); color: white; } /* Salmon/Coral color */
 .feedback-grey { background-color: var(--color-grey); color: white; }
+
 
 /* 9. Tutorial Modal (Ensure it still works with new colors) */
 
-.modal {
-    background-color: rgba(0,0,0,0.7); 
-}
-.modal-content {
-    background-color: var(--color-white);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
-}
-#tutorial-next-button {
-    background-color: var(--color-green);
-}
-/* ... remaining tutorial styles ... */
+.modal { background-color: rgba(0,0,0,0.7); }
+.modal-content { background-color: var(--color-white); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6); }
+#tutorial-next-button { background-color: var(--color-green); }
 
 
-/* 10. Mobile Responsiveness (Adjusted for new tile size) */
+/* 10. Mobile Responsiveness */
 @media (max-width: 600px) {
     
     #game-container {
