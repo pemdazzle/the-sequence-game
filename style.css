@@ -1,0 +1,99 @@
+/* Basic Reset and Layout */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    background-color: #f0f2f5;
+    padding-top: 50px;
+    margin: 0;
+}
+
+#game-container {
+    width: 90%;
+    max-width: 450px;
+    text-align: center;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: #333;
+    font-size: 1.8em;
+}
+
+/* --- Tile Styling (Key Component) --- */
+.sequence, .options {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 25px;
+}
+
+.tile {
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    background-color: #e0e0e0;
+    color: #333;
+    font-size: 1.2em;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.1s, transform 0.1s;
+}
+
+/* Styling for the target '?' tile */
+.guess-target {
+    background-color: #5d5d5d;
+    color: white;
+    cursor: default;
+}
+
+/* Styling for selectable options */
+.option-tile:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Submit Button */
+#submit-guess {
+    padding: 12px 25px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    width: 100%;
+    margin-top: 15px;
+}
+#submit-guess:disabled {
+    background-color: #a0c9f1;
+    cursor: not-allowed;
+}
+
+/* --- Feedback Colors (The Viral Loop Look) --- */
+
+/* GREEN - Solved */
+.feedback-green {
+    background-color: #6aaa64; /* Wordle Green */
+    color: white;
+}
+
+/* GOLD - Rule Match */
+.feedback-gold {
+    background-color: #c9b458; /* Wordle Yellow/Gold */
+    color: white;
+}
+
+/* GREY - No Match */
+.feedback-grey {
+    background-color: #787c7e; /* Wordle Grey */
+    color: white;
+}
