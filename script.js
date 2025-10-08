@@ -1,230 +1,240 @@
-// ===== Sequence Game Script =====
-
-// --- Constants ---
-const LAUNCH_DATE = new Date('2025-10-01');
-const MAX_GUESSES = 4; // Increased for the new two-step logic
-const PUZZLE_FILE = 'puzzles.json';
-
-// --- DOM Elements ---
-const sequenceDisplay = document.getElementById('sequence-display');
-const optionsPool = document.getElementById('options-pool');
-const messageEl = document.getElementById('message');
-const chanceIndicators = document.getElementById('chance-indicators');
-const rulesIcon = document.getElementById('rules-icon');
-const hintIcon = document.getElementById('hint-icon');
-const giveUpIcon = document.getElementById('give-up-icon');
-const tutorialModal = document.getElementById('tutorial-modal');
-const tutorialCloseButton = document.getElementById('tutorial-close-button');
-const archiveIcon = document.getElementById('archive-icon');
-const settingsIcon = document.getElementById('settings-icon');
-
-
-// --- Game State ---
-let currentPuzzle = null;
-let guesses = [];
-let selectedDistractor = null;
-let hintLevel = 0;
-let isGameOver = false;
-
-// --- Tutorial ---
-function showTutorial() { tutorialModal.style.display = 'flex'; }
-function closeTutorial() { tutorialModal.style.display = 'none'; localStorage.setItem('hasSeenTutorial', 'true'); }
-tutorialCloseButton.addEventListener('click', closeTutorial);
-rulesIcon.addEventListener('click', showTutorial);
-
-// --- Load Daily Puzzle ---
-async function loadDailyPuzzle() {
-    if (!localStorage.getItem('hasSeenTutorial')) {
-        showTutorial();
-    }
-
-    try {
-        const response = await fetch(PUZZLE_FILE);
-        const allPuzzles = await response.json();
-        if (!Array.isArray(allPuzzles) || !allPuzzles.length) throw new Error("Puzzle data is invalid.");
-
-        const today = new Date();
-        const dayIndex = Math.floor((today - LAUNCH_DATE) / (1000 * 60 * 60 * 24));
-        currentPuzzle = allPuzzles[dayIndex % allPuzzles.length];
-        
-        renderPuzzle(currentPuzzle);
-    } catch (error) {
-        console.error("Failed to load puzzle:", error);
-        messageEl.textContent = "⚠️ Error loading today's puzzle. Please refresh.";
-    }
+/* ===== Base Reset ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
 }
 
-// --- Render Puzzle ---
-function renderPuzzle(puzzle) {
-    // Reset state for new puzzle
-    guesses = [];
-    selectedDistractor = null;
-    hintLevel = 0;
-    isGameOver = false;
-
-    // Render sequence tiles
-    sequenceDisplay.innerHTML = '';
-    puzzle.sequence_display.forEach(num => {
-        const tile = document.createElement('div');
-        tile.classList.add('tile', 'sequence-tile');
-        tile.textContent = num;
-        tile.dataset.value = num;
-        tile.addEventListener('click', handleDistractorSelection);
-        sequenceDisplay.appendChild(tile);
-    });
-
-    // Render options tiles
-    optionsPool.innerHTML = '';
-    puzzle.options_pool.forEach(option => {
-        const tile = document.createElement('div');
-        tile.classList.add('tile', 'option-tile');
-        tile.textContent = option.value;
-        tile.dataset.value = option.value;
-        tile.addEventListener('click', handleGuess);
-        optionsPool.appendChild(tile);
-    });
-
-    updateUI();
+body {
+    background: #f0f2f5;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem 1rem;
 }
 
-// --- Update UI ---
-function updateUI() {
-    // Update Chance Indicators (Lightbulbs)
-    chanceIndicators.innerHTML = '';
-    const remainingGuesses = MAX_GUESSES - guesses.length;
-    for (let i = 0; i < MAX_GUESSES; i++) {
-        const span = document.createElement('span');
-        span.classList.add('lightbulb', i < remainingGuesses ? 'lightbulb-on' : 'lightbulb-off');
-        span.innerHTML = '<i class="fas fa-lightbulb"></i>';
-        chanceIndicators.appendChild(span);
-    }
-
-    // Update message
-    if (isGameOver) return;
-    if (selectedDistractor === null) {
-        messageEl.textContent = 'Identify the number that breaks the pattern.';
-    } else {
-        messageEl.textContent = 'Now, find the next number in the sequence.';
-    }
+/* ===== Header & Icons ===== */
+#global-header {
+    text-align: center;
+    margin-bottom: 1rem;
 }
 
-// --- Event Handlers ---
-
-function handleDistractorSelection(e) {
-    if (isGameOver || selectedDistractor !== null) return;
-
-    const value = parseInt(e.currentTarget.dataset.value);
-    selectedDistractor = value;
-
-    // Visually deactivate selected tile and update others
-    document.querySelectorAll('.sequence-tile').forEach(tile => {
-        if (parseInt(tile.dataset.value) === value) {
-            tile.classList.add('deactivated');
-        } else {
-            tile.classList.remove('deactivated'); // Ensure only one is ever deactivated
-        }
-        tile.removeEventListener('click', handleDistractorSelection); // Lock in selection
-    });
-    
-    updateUI();
+#global-header h1 {
+    font-size: 2.2rem;
+    color: #3a3a3a;
 }
 
-function handleGuess(e) {
-    if (isGameOver || guesses.length >= MAX_GUESSES) return;
-
-    if (selectedDistractor === null) {
-        messageEl.textContent = 'First, you must select a distractor from the top row.';
-        return;
-    }
-
-    const guessedValue = parseInt(e.currentTarget.dataset.value);
-    const isCorrectDistractor = selectedDistractor === currentPuzzle.distractor_value;
-    const isCorrectAnswer = guessedValue === currentPuzzle.correct_answer;
-
-    guesses.push(guessedValue);
-    
-    e.currentTarget.classList.add('is-flipped');
-    e.currentTarget.removeEventListener('click', handleGuess);
-
-    if (isCorrectDistractor && isCorrectAnswer) {
-        // WIN condition
-        messageEl.textContent = `🎉 Correct! The rule was: ${currentPuzzle.rule_description}`;
-        e.currentTarget.classList.add('feedback-green');
-        endGame(true);
-    } else {
-        // INCORRECT guess condition
-        if (!isCorrectDistractor) {
-            messageEl.textContent = 'That is not the correct answer. Re-evaluate your chosen distractor.';
-        } else {
-            messageEl.textContent = 'You have the right sequence, but that is not the next number.';
-        }
-        e.currentTarget.classList.add('feedback-grey');
-
-        if (guesses.length >= MAX_GUESSES) {
-            messageEl.textContent = `💀 Game Over! The answer was ${currentPuzzle.correct_answer}.`;
-            endGame(false);
-        }
-    }
-    
-    updateUI();
+#tagline {
+    color: #555;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
 }
 
-function endGame(didWin) {
-    isGameOver = true;
-    document.querySelectorAll('.option-tile, .sequence-tile').forEach(tile => {
-        tile.removeEventListener('click', handleGuess);
-        tile.removeEventListener('click', handleDistractorSelection);
-    });
-
-    // Reveal correct answer if lost
-    if (!didWin) {
-        const correctOption = document.querySelector(`.option-tile[data-value='${currentPuzzle.correct_answer}']`);
-        if (correctOption) {
-            correctOption.classList.add('feedback-green');
-        }
-    }
+#icon-bar {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
 }
 
+.icon {
+    cursor: pointer;
+    transition: color 0.2s;
+    background: none;
+    border: none;
+    color: #555;
+}
 
-// --- Hint & Give Up ---
-hintIcon.addEventListener('click', () => {
-    if (isGameOver) return;
-    
-    hintLevel++;
-    switch(hintLevel) {
-        case 1:
-            messageEl.textContent = `💡 Hint: The pattern is ${currentPuzzle.rule_type}.`;
-            break;
-        case 2:
-            const oppositeType = currentPuzzle.rule_type === 'Arithmetic' ? 'Geometric' : 'Arithmetic';
-            messageEl.textContent = `💡 Hint: The pattern does NOT involve ${oppositeType.toLowerCase()} logic.`;
-            break;
-        case 3:
-            messageEl.textContent = `💡 Hint: ${currentPuzzle.rule_description}`;
-            break;
-        case 4:
-            messageEl.textContent = `💡 Hint: The distractor number is ${currentPuzzle.distractor_value}.`;
-            // Visually show the distractor
-            document.querySelectorAll('.sequence-tile').forEach(tile => {
-                tile.classList.toggle('deactivated', parseInt(tile.dataset.value) === currentPuzzle.distractor_value);
-            });
-            break;
-        default:
-            messageEl.textContent = 'No more hints available!';
-    }
-});
+.icon:hover {
+    color: #4a90e2;
+}
 
-giveUpIcon.addEventListener('click', () => {
-    if (isGameOver) return;
-    messageEl.textContent = `🏳️ The answer was ${currentPuzzle.correct_answer}. The distractor was ${currentPuzzle.distractor_value}.`;
-    endGame(false);
-});
+/* ===== Game Container ===== */
+#game-container {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    padding: 2rem;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    margin-top: 3rem; 
+}
+
+/* ===== Step Labels ===== */
+.step-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #777;
+    margin-bottom: 0.75rem;
+}
+
+/* ===== Sequence & Options Tiles ===== */
+.sequence, .options {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 1.5rem;
+}
+
+.options {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.tile {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    background-color: #e3e8ef;
+    color: #333;
+    font-weight: 600;
+    font-size: 1.2rem;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.tile:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+#guess-target {
+    background-color: #333;
+    color: white;
+    cursor: default;
+}
+
+/* For sequence tiles that can be selected as distractors */
+.sequence-tile.deactivated {
+    opacity: 0.4;
+    background-color: #ccc;
+    transform: scale(0.95);
+    border: 2px dashed #888;
+}
+
+/* ===== Tile Flip Animation ===== */
+.option-tile {
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
+}
+
+.option-tile.is-flipped {
+    transform: rotateY(180deg);
+}
+
+/* Feedback Colors - applied to flipped tiles */
+.feedback-green { background-color: #6aaa64; color: white; border-color: #6aaa64; }
+.feedback-gold { background-color: #c9b458; color: white; border-color: #c9b458; }
+.feedback-grey { background-color: #787c7e; color: white; border-color: #787c7e; }
 
 
-// --- Placeholder Icons ---
-archiveIcon.addEventListener('click', () => alert('Archivist / Past Games coming soon!'));
-settingsIcon.addEventListener('click', () => alert('Settings coming soon!'));
+/* ===== Chance Indicators ===== */
+#chance-indicators {
+    position: absolute;
+    top: -2.5rem;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    font-size: 1.5rem;
+}
 
+.lightbulb-on { color: gold; }
+.lightbulb-off { color: #ccc; }
 
-// --- Initialize Game ---
-loadDailyPuzzle();
+/* ===== Action Icons ===== */
+#action-area {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+    padding: 0 2rem;
+}
+
+.action-icon {
+    font-size: 1.8rem;
+}
+
+.flag { color: #e74c3c; }
+
+/* ===== Message Area ===== */
+#message {
+    margin-top: 1rem;
+    min-height: 1.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+/* ===== Modal / Tutorial ===== */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+}
+
+.help-panel {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 550px;
+    width: 90%;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+}
+
+.help-panel h2 { text-align: center; margin-bottom: 1.5rem; }
+
+.help-section {
+    display: flex;
+    align-items: flex-start;
+    background: #f0f2f5;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.help-icon { font-size: 1.5rem; margin-right: 1rem; color: #4a90e2; }
+.help-icon.salmon { color: #e27d60; }
+.help-icon.green { color: #6aaa64; }
+
+.help-text h3 { margin-bottom: 0.25rem; }
+.help-text p { font-size: 0.9rem; color: #333; }
+
+.got-it-button {
+    margin-top: 1rem;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    font-weight: 600;
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.got-it-button:hover { background-color: #357ABD; }
+
+/* ===== Responsive ===== */
+@media (max-width: 600px) {
+    .tile { font-size: 1rem; }
+    #game-container { padding: 1.5rem 1rem; }
+    .options { grid-template-columns: repeat(3, 1fr); }
+}
+
