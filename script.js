@@ -235,15 +235,25 @@ function disableOptions() {
 }
 
 
-// --- 6. Event Listeners and Initialization ---
+// 6. Event Listeners and Initialization ---
 
 // Tutorial (Question Mark)
 rulesIcon.addEventListener('click', showTutorial);
 tutorialNextButton.addEventListener('click', handleTutorialNext);
 
 // Archivist (Folder Icon)
-archiveIcon.addEventListener('click', showArchive);
+archiveIcon.addEventListener('click', showArchive); // This line is the fix!
 archiveCloseButton.addEventListener('click', closeArchive);
+
+// Placeholder for Stats/Settings icons
+document.getElementById('stats-icon').addEventListener('click', () => {
+    alert("Stats: Win history coming soon! (Placeholder)"); 
+});
+
+document.getElementById('settings-icon').addEventListener('click', () => {
+    alert("Settings: Hard mode coming soon! (Placeholder)"); 
+});
+
 
 // Optional: Give up flag
 document.getElementById('give-up-icon').addEventListener('click', () => {
