@@ -1,0 +1,90 @@
+// --- Puzzle Generator for Sequence Game ---
+// This script generates a large JSON file of puzzles for the game.
+// To run: node generator.js > puzzles.json
+
+const NUM_PUZZLES_TO_GENERATE = 730; // ~2 years of daily puzzles
+
+const ruleTemplates = [
+    { type: 'Arithmetic', operation: 'add', baseRange: [1, 10], stepRange: [2, 12] },
+    { type: 'Arithmetic', operation: 'subtract', baseRange: [50, 100], stepRange: [3, 15] },
+    { type: 'Geometric', operation: 'multiply', baseRange: [2, 5], stepRange: [2, 4] },
+    { type: 'Geometric', operation: 'divide', baseRange: [160, 480], stepRange: [2, 3] }
+];
+
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function generatePuzzle(puzzleId) {
+    const template = ruleTemplates[getRandomInt(0, ruleTemplates.length - 1)];
+
+    let base = getRandomInt(template.baseRange[0], template.baseRange[1]);
+    const step = getRandomInt(template.stepRange[0], template.stepRange[1]);
+
+    const main_sequence = [base];
+    let description = '';
+
+    for (let i = 0; i < 3; i++) {
+        switch (template.operation) {
+            case 'add':
+                base += step;
+                description = `The pattern adds ${step} to the previous number.`;
+                break;
+            case 'subtract':
+                base -= step;
+                description = `The pattern subtracts ${step} from the previous number.`;
+                break;
+            case 'multiply':
+                base *= step;
+                description = `The pattern multiplies the previous number by ${step}.`;
+                break;
+            case 'divide':
+                // Ensure clean division
+                base = Math.round(base / step);
+                description = `The pattern divides the previous number by ${step}.`;
+                break;
+        }
+        main_sequence.push(base);
+    }
+    
+    const correct_answer = main_sequence.pop();
+    
+    // Generate a distractor
+    const distractor_value = correct_answer + getRandomInt(-10, 10) * (getRandomInt(0, 1) ? 1 : -1) + step;
+    
+    const sequence_display = [...main_sequence, distractor_value].sort(() => Math.random() - 0.5);
+
+    // Generate options pool
+    const options_pool = [{ value: correct_answer, feedback: 'CORRECT' }];
+    const usedValues = new Set([correct_answer, distractor_value]);
+
+    while (options_pool.length < 6) {
+        const wrongOption = correct_answer + getRandomInt(-20, 20);
+        if (!usedValues.has(wrongOption)) {
+            options_pool.push({ value: wrongOption, feedback: 'NO_MATCH' });
+            usedValues.add(wrongOption);
+        }
+    }
+    
+    return {
+        puzzle_id: puzzleId,
+        sequence_display: sequence_display,
+        distractor_value: distractor_value,
+        main_sequence: main_sequence,
+        correct_answer: correct_answer,
+        rule_type: template.type,
+        rule_description: description,
+        options_pool: options_pool.sort(() => Math.random() - 0.5)
+    };
+}
+
+function generateAllPuzzles() {
+    const puzzles = [];
+    for (let i = 1; i <= NUM_PUZZLES_TO_GENERATE; i++) {
+        puzzles.push(generatePuzzle(i));
+    }
+    // The output of this log will be redirected to the file.
+    console.log(JSON.stringify(puzzles, null, 2));
+}
+
+generateAllPuzzles();
