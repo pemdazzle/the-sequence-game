@@ -1,4 +1,4 @@
-// --- script.js: The Finalized Game Logic ---
+// --- script.js: The Finalized Game Logic (RE-COMMITTING FOR SYNC) ---
 
 // 1. Initial Setup and Constants
 const LAUNCH_DATE = new Date('2025-10-01');
@@ -25,7 +25,7 @@ const tutorialTextBox = document.getElementById('tutorial-text-box');
 const tutorialNextButton = document.getElementById('tutorial-next-button');
 const tutorialSkipButton = document.getElementById('tutorial-skip-button');
 
-// --- TUTORIAL CONTENT ---
+// --- TUTORIAL CONTENT (Content remains the same) ---
 const TUTORIAL_STEPS = [
     {
         title: "Rule 1: The Basic Game",
@@ -96,8 +96,9 @@ async function loadDailyPuzzle() {
         const response = await fetch(PUZZLE_FILE);
         const allPuzzles = await response.json();
         
-        if (allPuzzles.length === 0) {
-             messageElement.textContent = "Error: Puzzle data is empty.";
+        // **CRITICAL CHECK ADDED:** Ensure the fetched data is an array
+        if (!Array.isArray(allPuzzles) || allPuzzles.length === 0) {
+             messageElement.textContent = "Error: Puzzle data is missing or corrupted. Check sequence_puzzles_600.json.";
              return;
         }
 
@@ -111,7 +112,7 @@ async function loadDailyPuzzle() {
         renderChances(); // Render the initial lightbulbs
 
     } catch (error) {
-        messageElement.textContent = "Error fetching data. Check your JSON file and path.";
+        messageElement.textContent = "Fatal Error fetching data. Is sequence_puzzles_600.json uploaded and named correctly?";
         console.error("Fetch Error:", error);
     }
 }
