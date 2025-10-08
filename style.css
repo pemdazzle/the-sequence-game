@@ -88,30 +88,18 @@ body {
   transform: scale(1.05);
 }
 
-/* Target "?" Tile */
 .guess-target {
   background-color: #333;
   color: white;
   cursor: default;
 }
 
-/* Feedback Colors (Wordle-like) */
-.feedback-green {
-  background-color: #6aaa64;
-  color: white;
-}
+/* Feedback Colors */
+.feedback-green { background-color: #6aaa64; color: white; }
+.feedback-gold { background-color: #e27d60; color: white; }
+.feedback-grey { background-color: #787c7e; color: white; }
 
-.feedback-gold {
-  background-color: #e27d60;
-  color: white;
-}
-
-.feedback-grey {
-  background-color: #787c7e;
-  color: white;
-}
-
-/* ===== Chance Indicators (Lightbulbs) ===== */
+/* ===== Chance Indicators ===== */
 #chance-indicators {
   display: flex;
   justify-content: center;
@@ -120,15 +108,10 @@ body {
   margin-bottom: 1rem;
 }
 
-.lightbulb-on {
-  color: gold;
-}
+.lightbulb-on { color: gold; }
+.lightbulb-off { color: #ccc; }
 
-.lightbulb-off {
-  color: #ccc;
-}
-
-/* ===== Action Icons (Hint / Give Up) ===== */
+/* ===== Action Icons ===== */
 #action-area {
   display: flex;
   justify-content: space-between;
@@ -136,119 +119,3 @@ body {
 }
 
 .action-icon {
-  font-size: 1.5rem;
-  padding: 8px;
-  border-radius: 50%;
-  background-color: #e3e8ef;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.flag {
-  color: #e74c3c;
-}
-
-/* ===== Message Area ===== */
-#message {
-  margin-top: 1rem;
-  min-height: 1.5rem;
-  font-weight: 600;
-  font-size: 1rem;
-}
-
-/* ===== Modal / Tutorial ===== */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 100;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.6);
-  justify-content: center;
-  align-items: center;
-}
-
-.help-panel {
-  background: white;
-  border-radius: 12px;
-  padding: 2rem;
-  max-width: 550px;
-  width: 90%;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-}
-
-.help-panel h2 {
-  text-align: center;
-  margin-bottom: 1.5rem;
-}
-
-.help-section {
-  display: flex;
-  align-items: flex-start;
-  background: #f0f2f5;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-}
-
-.help-icon {
-  font-size: 1.5rem;
-  margin-right: 1rem;
-  color: #4a90e2;
-}
-
-.help-icon.salmon {
-  color: #e27d60;
-}
-
-.help-icon.green {
-  color: #6aaa64;
-}
-
-.help-text h3 {
-  margin-bottom: 0.25rem;
-}
-
-.help-text p, .help-text ul {
-  font-size: 0.9rem;
-  color: #333;
-}
-
-/* Got it button */
-.got-it-button {
-  margin-top: 1rem;
-  background-color: #e74c3c;
-  color: white;
-  border: none;
-  padding: 0.75rem 1rem;
-  border-radius: 10px;
-  font-weight: 600;
-  width: 100%;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.got-it-button:hover {
-  background-color: #c0392b;
-}
-
-/* ===== Responsive ===== */
-@media (max-width: 600px) {
-  .tile {
-    width: 45px;
-    height: 45px;
-    line-height: 45px;
-    font-size: 1rem;
-  }
-
-  #game-container {
-    padding: 1rem;
-  }
-
-  #action-area {
-    flex-direction: column;
-    gap: 10px;
-  }
-}
