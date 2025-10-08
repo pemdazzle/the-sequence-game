@@ -97,3 +97,40 @@ h1 {
     background-color: #787c7e; /* Wordle Grey */
     color: white;
 }
+/* --- Mobile Responsiveness (Max Width 600px) --- */
+@media (max-width: 600px) {
+    
+    #game-container {
+        /* Remove max-width on mobile to let it breathe */
+        max-width: 100%;
+        padding: 10px;
+        margin: 0 5px; /* Add slight margin to the edges */
+    }
+
+    /* Reduce the size of the tiles */
+    .tile {
+        width: 45px; /* Smaller width */
+        height: 45px; /* Smaller height */
+        line-height: 45px; /* Center the text vertically */
+        font-size: 1.0em; /* Slightly smaller font */
+        border-radius: 6px; /* Slightly smaller radius */
+        /* Important: Ensure equal spacing */
+        flex-grow: 1; /* Allow tiles to fill available space */
+    }
+    
+    /* Ensure the sequence and options pool don't run out of room */
+    .sequence, .options {
+        gap: 5px; /* Reduce gap between tiles */
+        justify-content: space-around; /* Distribute space evenly */
+    }
+    
+    /* Make the title slightly smaller on mobile */
+    h1 {
+        font-size: 1.5em;
+    }
+    
+    /* Ensure history tiles are still visible */
+    .feedback-row {
+        /* You may need to adjust the feedback history if it gets too complex */
+    }
+}
