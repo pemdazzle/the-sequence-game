@@ -1,3 +1,77 @@
-<script src="script.js"></script>
-</body>
-</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Sequence</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    
+    <header id="global-header">
+        <h1>Sequence</h1> <p id="tagline">Unravel the pattern.</p>
+    </header>
+
+    <div id="icon-bar">
+        <span class="icon" id="archive-icon" title="Archivist/Past Games"><i class="fas fa-folder"></i></span>
+        <span class="icon" id="rules-icon" title="Rules and Tutorial"><i class="fas fa-question-circle"></i></span>
+        <span class="icon" id="stats-icon" title="Win History"><i class="fas fa-chart-bar"></i></span>
+        <span class="icon" id="settings-icon" title="Settings"><i class="fas fa-cog"></i></span>
+    </div>
+
+    <div id="game-container">
+
+        <div id="chance-indicators">
+            </div>
+
+        <div id="sequence-box" class="floating-box">
+            <div id="sequence-display" class="sequence">
+                <div class="tile">0</div>
+                <div class="tile">0</div>
+                <div class="tile">0</div>
+                <div class="tile">0</div>
+                <div id="guess-target" class="tile guess-target">?</div>
+            </div>
+        </div>
+
+        <h2>Options</h2>
+        <div id="options-pool" class="options">
+            </div>
+
+        <div id="action-area">
+             <span id="hint-icon" class="icon action-icon" title="Get a Hint"><i class="fas fa-magic"></i></span>
+            <span id="give-up-icon" class="icon action-icon flag" title="Give Up"><i class="fas fa-flag"></i></span>
+        </div>
+        
+        <p id="message"></p>
+    </div>
+    
+    <div id="tutorial-modal" class="modal">
+        <div class="modal-content help-panel">
+            <h2>How to Play Sequence</h2>
+            
+            <div class="help-section">
+                <span class="help-icon"><i class="fas fa-bullseye"></i></span>
+                <div class="help-text">
+                    <h3>The Goal</h3>
+                    <p>Guess the number that completes the sequence using one of the six options below. You have three chances.</p>
+                </div>
+            </div>
+
+            <div class="help-section">
+                <span class="help-icon salmon"><i class="fas fa-sync-alt"></i></span>
+                <div class="help-text">
+                    <h3>The Interwoven Rule</h3>
+                    <p>The sequence is **interwoven**. Find the pattern by looking at the **1st, 3rd, and the missing (5th) number**. The 2nd and 4th numbers form a separate distractor sequence.</p>
+                </div>
+            </div>
+
+            <div class="help-section">
+                <span class="help-icon green"><i class="fas fa-palette"></i></span>
+                <div class="help-text">
+                    <h3>Color Feedback</h3>
+                    <ul>
+                        <li><span style="color: #6aaa64; font-weight: bold;">GREEN:</span> Correctly solved the main (
