@@ -3,7 +3,7 @@
 // --- Constants ---
 const LAUNCH_DATE = new Date('2025-10-01');
 const MAX_GUESSES = 3;
-const PUZZLE_FILE = './sequence_puzzles_600.json'; // GitHub root
+const PUZZLE_FILE = './sequence_puzzles_600.json';
 
 // --- DOM Elements ---
 const sequenceDisplay = document.getElementById('sequence-display');
@@ -25,7 +25,7 @@ const tutorialNextButton = document.getElementById('tutorial-next-button');
 let currentPuzzle = null;
 let guesses = [];
 
-// --- Tutorial Functions ---
+// --- Tutorial ---
 function showTutorial() { tutorialModal.style.display = 'flex'; }
 function closeTutorial() { tutorialModal.style.display = 'none'; localStorage.setItem('hasSeenTutorial','true'); }
 tutorialNextButton.addEventListener('click', closeTutorial);
@@ -38,10 +38,7 @@ async function loadDailyPuzzle() {
     try {
         const response = await fetch(PUZZLE_FILE);
         const allPuzzles = await response.json();
-
-        if (!Array.isArray(allPuzzles) || allPuzzles.length === 0) {
-            throw new Error("Puzzle data missing or corrupted.");
-        }
+        if (!Array.isArray(allPuzzles) || !allPuzzles.length) throw new Error("Puzzle data missing.");
 
         const today = new Date();
         const dayIndex = Math.floor((today - LAUNCH_DATE)/(1000*60*60*24));
@@ -49,20 +46,18 @@ async function loadDailyPuzzle() {
 
         renderPuzzle(currentPuzzle);
         renderChances();
-    } catch (err) {
-        console.error("Failed to load puzzle:", err);
-        // Fallback test puzzle
+    } catch {
         currentPuzzle = {
             puzzle_id: 0,
-            sequence_display: [10, 189, 17, 567],
+            sequence_display: [10,189,17,567],
             correct_answer: 25,
             options_pool: [
-                {value: 25, feedback: 'CORRECT'},
-                {value: 746, feedback: 'RULE_MATCH'},
-                {value: 106, feedback: 'NO_MATCH'},
-                {value: 1117, feedback: 'NO_MATCH'},
-                {value: 24, feedback: 'NO_MATCH'},
-                {value: -1, feedback: 'NO_MATCH'}
+                {value:25, feedback:'CORRECT'},
+                {value:746, feedback:'RULE_MATCH'},
+                {value:106, feedback:'NO_MATCH'},
+                {value:1117, feedback:'NO_MATCH'},
+                {value:24, feedback:'NO_MATCH'},
+                {value:-1, feedback:'NO_MATCH'}
             ]
         };
         renderPuzzle(currentPuzzle);
@@ -99,7 +94,7 @@ function renderChances() {
     const remaining = MAX_GUESSES - guesses.length;
     for (let i = 0; i < MAX_GUESSES; i++) {
         const span = document.createElement('span');
-        span.classList.add('lightbulb', i < remaining ? 'lightbulb-on' : 'lightbulb-off');
+        span.classList.add('lightbulb', i<remaining?'lightbulb-on':'lightbulb-off');
         span.innerHTML = '<i class="fas fa-lightbulb"></i>';
         chanceIndicators.appendChild(span);
     }
@@ -120,7 +115,6 @@ function handleSubmit(e) {
     e.currentTarget.classList.add(`feedback-${feedback.toLowerCase()}`);
     e.currentTarget.removeEventListener('click', handleSubmit);
 
-    // Update message and target tile
     if (feedback === 'CORRECT') {
         messageEl.textContent = '🎉 Correct! You solved the sequence!';
         guessTarget.classList.add('feedback-green');
@@ -157,7 +151,7 @@ giveUpIcon.addEventListener('click', () => {
     disableOptions();
 });
 
-// --- Placeholder icons ---
+// --- Placeholder Icons ---
 archiveIcon.addEventListener('click', () => alert('Archivist / Past Games coming soon!'));
 settingsIcon.addEventListener('click', () => alert('Settings coming soon!'));
 
