@@ -168,7 +168,7 @@ h2 {
 .feedback-grey { background-color: var(--color-grey); color: white; }
 
 
-/* --- 9. Refined HELP MODAL STYLING (CRITICAL OVERLAY CSS) --- */
+/* --- 9. Refined HELP/ARCHIVE MODAL STYLING (CRITICAL OVERLAY CSS) --- */
 
 .modal {
     display: none; /* IMPORTANT: Hidden by default. JS shows it */
@@ -184,14 +184,17 @@ h2 {
     align-items: center;
 }
 
+.modal-content {
+    background-color: var(--color-white);
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
 .help-panel {
     padding: 30px;
     width: 90%;
     max-width: 550px; 
     text-align: left; 
-    background-color: var(--color-white);
-    border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
 }
 
 .help-panel h2 {
@@ -255,11 +258,15 @@ h2 {
     margin-top: 25px;
     text-align: center;
 }
+
 /* --- Archivist Modal Styles --- */
 
 .archive-panel {
-    max-height: 80vh; /* Limits height on tall screens */
-    overflow-y: auto; /* Allows scrolling for many past puzzles */
+    padding: 30px;
+    width: 90%;
+    max-width: 550px; 
+    max-height: 80vh; 
+    overflow-y: auto; 
     text-align: center;
 }
 
@@ -299,4 +306,32 @@ h2 {
 .archive-puzzle-button:hover {
     background-color: #e0e0e0;
     transform: translateY(-1px);
+}
+
+
+/* 10. Mobile Responsiveness */
+@media (max-width: 600px) {
+    
+    #game-container {
+        max-width: 100%;
+        padding: 10px;
+        margin: 0 5px; 
+    }
+
+    .tile {
+        width: 40px; 
+        height: 40px;
+        line-height: 40px;
+        font-size: 1.0em; 
+        border-radius: 6px; 
+        flex-grow: 1; 
+    }
+    
+    .sequence, .options {
+        gap: 5px;
+    }
+
+    #global-header h1 {
+        font-size: 1.8em;
+    }
 }
