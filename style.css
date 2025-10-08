@@ -1,285 +1,166 @@
-/* --- Global Styles and PemDazzle Color Palette --- */
-:root {
-    /* Define colors for easy management */
-    --color-background: #f0f2f5; /* Very subtle light gray background */
-    --color-white: #ffffff; /* Pure white for floating boxes */
-    --color-text-dark: #333333; /* Dark text for titles */
-    --color-text-light: #888888; /* Light gray for taglines and subtle text */
-    --color-green: #6aaa64; /* Solved/Correct */
-    --color-gold: #e27d60; /* Adjusted: Using the salmon/coral color for GOLD feedback/alerts */
-    --color-grey: #787c7e; /* No Match */
-    --color-blue-action: #4a90e2; /* For active icons */
-    --color-flag-red: #e74c3c; /* For the "Give Up" flag */
+/* ===== Base Reset ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
 }
 
-/* 1. Body and Typography */
 body {
-    font-family: 'Poppins', Arial, sans-serif; /* Using the imported Google Font */
-    display: flex;
-    flex-direction: column; /* Stack header and game vertically */
-    align-items: center;
-    min-height: 100vh;
-    background-color: var(--color-background); /* Subtle gray background */
-    padding: 20px 0 50px 0;
-    margin: 0;
-    color: var(--color-text-dark);
+  background: linear-gradient(135deg, #f3f5f7, #e3e8ef);
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 2rem;
 }
 
-/* 2. Header and Tagline */
-#global-header {
-    text-align: center;
-    margin-bottom: 20px;
+/* ===== Header ===== */
+header {
+  text-align: center;
+  margin-bottom: 2rem;
 }
 
-#global-header h1 {
-    font-size: 2.2em;
-    font-weight: 700;
-    margin: 0;
-    color: var(--color-text-dark);
+header h1 {
+  font-size: 2.2rem;
+  color: #3a3a3a;
 }
 
-#tagline {
-    font-size: 0.9em;
-    color: var(--color-text-light); /* Lighter grey for tagline */
-    margin-top: 5px;
-    font-weight: 400;
+header p {
+  color: #555;
+  margin-top: 0.5rem;
 }
 
-/* 3. Icons Bar */
-#icon-bar {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 20px;
-    color: var(--color-text-dark);
-}
-
-.icon {
-    font-size: 1.3em;
-    cursor: pointer;
-    transition: color 0.2s;
-}
-
-.icon:hover {
-    color: var(--color-blue-action);
-}
-
-/* 4. Main Containers (The Floating Boxes) */
+/* ===== Game Container ===== */
 #game-container {
-    width: 90%;
-    max-width: 450px;
-    text-align: center;
-    padding: 20px;
-    border-radius: 12px;
-    /* Soft shadow effect for the 'floating' white box */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); 
-    background: var(--color-white); /* Pure white background */
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  padding: 2rem;
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
 }
 
-.floating-box {
-    background-color: var(--color-white);
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* Subtle shadow for inner boxes */
-    margin-bottom: 20px;
+/* ===== Word Prompt ===== */
+#prompt {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #333;
 }
 
-/* 5. Tiles and Sequence Display */
-.sequence, .options {
-    display: flex;
-    justify-content: space-between;
-    gap: 8px;
+#category {
+  font-size: 0.9rem;
+  color: #777;
+  margin-bottom: 2rem;
 }
 
-h2 {
-    font-size: 1.1em;
-    color: var(--color-text-dark);
-    font-weight: 600;
-    margin: 15px 0 10px 0;
+/* ===== Input Section ===== */
+#guess-input {
+  padding: 0.75rem 1rem;
+  border: 2px solid #ccc;
+  border-radius: 12px;
+  width: 70%;
+  font-size: 1rem;
+  outline: none;
+  transition: 0.3s ease;
 }
 
-.tile {
-    width: 60px;
-    height: 60px;
-    line-height: 60px;
-    background-color: var(--color-background); /* Lighter background for non-selected tiles */
-    color: var(--color-text-dark);
-    font-size: 1.2em;
-    font-weight: 600;
-    border-radius: 8px;
-    cursor: pointer;
-    user-select: none;
-    transition: all 0.2s;
+#guess-input:focus {
+  border-color: #6a5acd;
 }
 
-/* Styling for the target '?' tile */
-.guess-target {
-    background-color: var(--color-text-dark);
-    color: var(--color-white);
-    cursor: default;
+#submit-btn {
+  padding: 0.75rem 1.5rem;
+  margin-left: 0.5rem;
+  background: #6a5acd;
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
 }
 
-/* Selected option visual feedback */
-.option-tile:hover {
-    transform: scale(1.02);
+#submit-btn:hover {
+  background: #7b68ee;
+  transform: translateY(-2px);
 }
 
-/* 6. Lightbulb Indicators */
-#chance-indicators {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 15px;
-    font-size: 1.5em; /* Icon size */
+/* ===== Feedback ===== */
+#feedback {
+  margin-top: 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  min-height: 1.5rem;
 }
 
-.lightbulb-on {
-    color: gold; /* Yellow for active */
+.feedback-correct {
+  color: #2e8b57;
+  animation: pop 0.4s ease;
 }
 
-.lightbulb-off {
-    color: var(--color-text-light); /* Grey for used */
+.feedback-close {
+  color: #ff9800;
+  animation: shake 0.3s ease;
 }
 
-/* 7. Action Area (Hint/Flag) */
-#action-area {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 20px;
-    padding: 0 10px;
+.feedback-wrong {
+  color: #e53935;
+  animation: shake 0.3s ease;
 }
 
-.action-icon {
-    font-size: 1.5em;
-    padding: 8px;
-    border-radius: 50%;
-    background-color: var(--color-background);
+@keyframes pop {
+  0% { transform: scale(0.8); opacity: 0.5; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
-.flag {
-    color: var(--color-flag-red);
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
 }
 
-/* 8. Feedback Colors (Wordle-like) */
-
-.feedback-green { background-color: var(--color-green); color: white; }
-.feedback-gold { background-color: var(--color-gold); color: white; } /* Salmon/Coral color */
-.feedback-grey { background-color: var(--color-grey); color: white; }
-
-
-/* --- 9. Refined HELP MODAL STYLING (CRITICAL OVERLAY CSS) --- */
-
-.modal {
-    display: none; /* IMPORTANT: Hidden by default. JS shows it */
-    position: fixed; /* CRITICAL: Stays in place, overlays everything */
-    z-index: 100; /* Sits on top */
-    left: 0;
-    top: 0;
-    width: 100%; 
-    height: 100%; 
-    overflow: auto; 
-    background-color: rgba(0,0,0,0.6); /* Semi-transparent overlay */
-    justify-content: center;
-    align-items: center;
+/* ===== Score & Streak ===== */
+#score, #streak {
+  margin-top: 1rem;
+  font-weight: 600;
 }
 
-.help-panel {
-    padding: 30px;
-    width: 90%;
-    max-width: 550px; 
-    text-align: left; 
-    background-color: var(--color-white);
-    border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+#score {
+  font-size: 1.2rem;
 }
 
-.help-panel h2 {
-    text-align: center;
-    font-size: 1.8em;
-    margin-bottom: 25px;
+#streak {
+  font-size: 1rem;
+  color: #6a5acd;
 }
 
-.help-section {
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 20px;
-    padding: 15px;
-    background-color: var(--color-background); 
-    border-radius: 8px;
+/* ===== Buttons / Controls ===== */
+.control-btn {
+  margin-top: 1.5rem;
+  background: #e3e8ef;
+  border: none;
+  padding: 0.75rem 1.2rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  font-weight: 500;
 }
 
-.help-icon {
-    font-size: 1.6em;
-    color: var(--color-blue-action);
-    margin-right: 15px;
-    padding-top: 5px;
+.control-btn:hover {
+  background: #d1d9e6;
 }
 
-.help-icon.salmon {
-    color: var(--color-gold); 
-}
-
-.help-icon.green {
-    color: var(--color-green);
-}
-
-.help-text h3 {
-    margin: 0 0 5px 0;
-    font-size: 1.1em;
-    font-weight: 700;
-}
-
-.help-text p {
-    margin: 0;
-    font-size: 0.9em;
-    color: var(--color-text-dark);
-}
-
-.help-panel ul {
-    margin: 5px 0 0 0;
-    padding-left: 20px;
-    font-size: 0.9em;
-}
-
-.got-it-button {
-    background-color: var(--color-flag-red); 
-    color: white;
-    padding: 10px 25px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1.1em;
-    display: block;
-    width: 100%;
-    margin-top: 25px;
-    text-align: center;
-}
-
-
-/* 10. Mobile Responsiveness */
+/* ===== Responsive ===== */
 @media (max-width: 600px) {
-    
-    #game-container {
-        max-width: 100%;
-        padding: 10px;
-        margin: 0 5px; 
-    }
-
-    .tile {
-        width: 40px; 
-        height: 40px;
-        line-height: 40px;
-        font-size: 1.0em; 
-        border-radius: 6px; 
-        flex-grow: 1; 
-    }
-    
-    .sequence, .options {
-        gap: 5px;
-    }
-
-    #global-header h1 {
-        font-size: 1.8em;
-    }
+  #guess-input {
+    width: 100%;
+    margin-bottom: 0.75rem;
+  }
+  #submit-btn {
+    width: 100%;
+  }
 }
