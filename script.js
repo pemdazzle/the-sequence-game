@@ -215,3 +215,84 @@ function renderChances() {
         if (i < remaining) {
             span.classList.add('lightbulb-on');
         } else {
+            span.classList.add('lightbulb-off');
+        }
+        chanceIndicators.appendChild(span);
+    }
+}
+
+
+function handleSubmit(event) {
+    if (guesses.length >= MAX_GUESSES) return;
+
+    const selectedTile = event.currentTarget;
+    const guessValue = parseInt(selectedTile.dataset.value);
+
+    const optionObj = currentPuzzle.options_pool.find(opt => opt.value === guessValue);
+    
+    let feedback = 'NO_MATCH'; 
+    if (optionObj) {
+        feedback = optionObj.feedback;
+    } 
+
+    guesses.push({value: guessValue, feedback: feedback});
+    renderChances(); 
+
+    let feedbackClass = `feedback-${feedback.toLowerCase()}`;
+    selectedTile.classList.remove('feedback-grey', 'feedback-gold', 'feedback-green');
+    selectedTile.classList.add(feedbackClass);
+    selectedTile.removeEventListener('click', handleSubmit); 
+
+    if (feedback === 'CORRECT') {
+        messageElement.textContent = "CORRECT! You solved this sequence! Share your results!";
+        disableOptions();
+        guessTarget.classList.add('feedback-green');
+        guessTarget.textContent = guessValue;
+    } else if (guesses.length >= MAX_GUESSES) {
+        messageElement.textContent = `Game Over! The correct answer was ${currentPuzzle.correct_answer}.`;
+        disableOptions();
+        guessTarget.classList.add('feedback-grey'); 
+        guessTarget.textContent = currentPuzzle.correct_answer;
+    } else if (feedback === 'RULE_MATCH') {
+        messageElement.textContent = "GOLD! Close, but try the interwoven rule.";
+    } else {
+        messageElement.textContent = "Incorrect. Try again.";
+    }
+}
+
+function disableOptions() {
+    document.querySelectorAll('.option-tile').forEach(t => t.removeEventListener('click', handleSubmit));
+}
+
+
+// --- 6. Event Listeners and Initialization ---
+
+// Tutorial (Question Mark)
+rulesIcon.addEventListener('click', showTutorial);
+tutorialNextButton.addEventListener('click', handleTutorialNext);
+
+// Archivist (Folder Icon)
+archiveIcon.addEventListener('click', showArchive); // CORRECTED: Calls the showArchive modal function
+archiveCloseButton.addEventListener('click', closeArchive);
+
+// Placeholder for Stats/Settings icons
+statsIcon.addEventListener('click', () => {
+    alert("Stats: Win history coming soon! (Placeholder)"); 
+});
+
+settingsIcon.addEventListener('click', () => {
+    alert("Settings: Hard mode coming soon! (Placeholder)"); 
+});
+
+
+// Optional: Give up flag
+document.getElementById('give-up-icon').addEventListener('click', () => {
+    alert(`The correct answer was ${currentPuzzle.correct_answer}. You gave up.`);
+    disableOptions();
+    guessTarget.classList.add('feedback-grey');
+    guessTarget.textContent = currentPuzzle.correct_answer;
+});
+
+
+// Start the game by loading the puzzle
+loadDailyPuzzle();
