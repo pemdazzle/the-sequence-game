@@ -74,4 +74,26 @@
                 <div class="help-text">
                     <h3>Color Feedback</h3>
                     <ul>
-                        <li><span style="color: #6aaa64; font-weight: bold;">GREEN:</span> Correctly solved the main (
+                        <li><span style="color: #6aaa64; font-weight: bold;">GREEN:</span> Correctly solved the main (1st, 3rd, 5th) interwoven rule.</li>
+                        <li><span style="color: #e27d60; font-weight: bold;">GOLD (Salmon):</span> Correct number, but you used the wrong (distractor) sequence rule, or an unexpected simple rule.</li>
+                        <li><span style="color: #787c7e; font-weight: bold;">GREY:</span> Guess was incorrect.</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <button id="tutorial-next-button" class="got-it-button">Got it!</button>
+        </div>
+    </div>
+    <div id="archive-modal" class="modal">
+        <div class="modal-content archive-panel">
+            <h2>Archivist 🗓️</h2>
+            <p class="archive-info">Select a date to play a past puzzle.</p>
+            <div id="puzzle-history-list">
+                <p style="text-align: center; color: var(--color-text-light); margin-top: 30px;">Loading Archive...</p>
+            </div>
+            <button id="archive-close-button" class="got-it-button">Close</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
