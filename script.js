@@ -1,29 +1,12 @@
-// --- script.js: The Finalized Game Logic ---
+// --- script.js: The Finalized Game Logic (with Archivist) ---
 
 // 1. Initial Setup and Constants
 const LAUNCH_DATE = new Date('2025-10-01');
 const PUZZLE_FILE = './sequence_puzzles_600.json';
+let allPuzzlesData = []; // Store the full list of puzzles
 let currentPuzzle = null;
 let guesses = [];
 const MAX_GUESSES = 3;
-
-// TEMPORARY: Injected puzzle data to bypass fetch issues and confirm rendering works
-const TEST_PUZZLE_DATA = [
-    {
-      "puzzle_id": 1,
-      "rule_type": "Interwoven",
-      "sequence_display": [10, 189, 17, 567],
-      "correct_answer": 25,
-      "options_pool": [
-        {"value": 25, "feedback": "CORRECT"},
-        {"value": 746, "feedback": "RULE_MATCH"},
-        {"value": 106, "feedback": "NO_MATCH"},
-        {"value": 1117, "feedback": "NO_MATCH"},
-        {"value": 24, "feedback": "NO_MATCH"},
-        {"value": -1, "feedback": "NO_MATCH"}
-      ]
-    }
-];
 
 // DOM Elements
 const optionsPool = document.getElementById('options-pool');
@@ -35,32 +18,105 @@ const chanceIndicators = document.getElementById('chance-indicators');
 // Icon DOM Elements
 const rulesIcon = document.getElementById('rules-icon');
 const archiveIcon = document.getElementById('archive-icon');
-const settingsIcon = document.getElementById('settings-icon');
 
-// Tutorial DOM Elements
+// Modal Elements
 const tutorialModal = document.getElementById('tutorial-modal');
 const tutorialNextButton = document.getElementById('tutorial-next-button');
+const archiveModal = document.getElementById('archive-modal');
+const archiveCloseButton = document.getElementById('archive-close-button');
+const puzzleHistoryList = document.getElementById('puzzle-history-list');
 
 
-// --- 2. Tutorial Logic (for '?' Icon) ---
-// Simplified logic to just show/hide the single modal panel.
+// --- 2. Tutorial Logic (Simplified) ---
 
 function showTutorial() {
-    tutorialModal.style.display = 'flex'; // Show the modal overlay
+    tutorialModal.style.display = 'flex';
 }
 
 function closeTutorial() {
-    tutorialModal.style.display = 'none'; // Hide the modal
+    tutorialModal.style.display = 'none';
     localStorage.setItem('hasSeenTutorial', 'true');
 }
 
-// Button now just closes the help panel
 function handleTutorialNext() {
     closeTutorial();
 }
 
 
-// --- 3. Data Fetching and Puzzle Selection ---
+// --- 3. Archivist Logic ---
+
+function showArchive() {
+    archiveModal.style.display = 'flex';
+    renderArchiveList();
+}
+
+function closeArchive() {
+    archiveModal.style.display = 'none';
+}
+
+function getDayIndex(date) {
+    const timeDiff = date.getTime() - LAUNCH_DATE.getTime();
+    return Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+}
+
+function renderArchiveList() {
+    puzzleHistoryList.innerHTML = '';
+    const today = new Date();
+    const daysSinceLaunch = getDayIndex(today);
+    
+    if (allPuzzlesData.length === 0) {
+        puzzleHistoryList.innerHTML = `<p style="color: #e74c3c;">Error: Cannot load puzzle archive data.</p>`;
+        return;
+    }
+
+    // Only render for puzzles that exist in the data set
+    for (let i = daysSinceLaunch; i >= 0 && i < allPuzzlesData.length; i--) {
+        const puzzleIndex = i;
+        const button = document.createElement('button');
+        button.classList.add('archive-puzzle-button');
+        
+        // Calculate the date for display (start from today and go backwards)
+        const puzzleDate = new Date(LAUNCH_DATE);
+        puzzleDate.setDate(LAUNCH_DATE.getDate() + i);
+        const dateString = `${puzzleDate.getMonth() + 1}/${puzzleDate.getDate()}/${puzzleDate.getFullYear() % 100}`;
+
+        if (i === daysSinceLaunch) {
+            button.textContent = `Today (#${puzzleIndex + 1})`;
+        } else {
+            button.textContent = `${dateString} (#${puzzleIndex + 1})`;
+        }
+        
+        button.dataset.index = puzzleIndex;
+        button.addEventListener('click', () => loadPuzzleByIndex(puzzleIndex));
+        
+        puzzleHistoryList.appendChild(button);
+    }
+}
+
+function loadPuzzleByIndex(index) {
+    if (index >= 0 && index < allPuzzlesData.length) {
+        currentPuzzle = allPuzzlesData[index];
+        guesses = []; // Reset game state
+        
+        renderPuzzle(currentPuzzle);
+        renderChances();
+        
+        messageElement.textContent = `Now playing Puzzle #${index + 1}.`;
+        archiveModal.style.display = 'none'; // Close the archive modal
+        
+        // Ensure options are clickable again
+        document.querySelectorAll('.option-tile').forEach(t => t.addEventListener('click', handleSubmit));
+        guessTarget.textContent = '?';
+        guessTarget.classList.remove('feedback-green', 'feedback-grey');
+        document.getElementById('action-area').style.display = 'flex';
+
+    } else {
+        alert("Invalid puzzle index.");
+    }
+}
+
+
+// --- 4. Data Fetching and Puzzle Selection ---
 
 async function loadDailyPuzzle() {
     // Check if the user has seen the tutorial. If not, show it.
@@ -69,43 +125,41 @@ async function loadDailyPuzzle() {
     }
     
     try {
-        // *** TEMPORARY OVERRIDE ***
-        // const response = await fetch(PUZZLE_FILE); 
-        // const allPuzzles = await response.json(); 
-        const allPuzzles = TEST_PUZZLE_DATA; // Use hardcoded data for reliable testing
-        // **************************
+        // *** RE-ENABLED FETCH CALL ***
+        const response = await fetch(PUZZLE_FILE);
+        const allPuzzles = await response.json(); 
+        allPuzzlesData = allPuzzles; // Save all data globally
+        // ******************************
 
-        if (!Array.isArray(allPuzzles) || allPuzzles.length === 0) {
-             messageElement.textContent = "Error: Puzzle data is missing or corrupted.";
+        if (!Array.isArray(allPuzzlesData) || allPuzzlesData.length === 0) {
+             messageElement.textContent = "Error: Puzzle data is missing or corrupted. Check console for details.";
              return;
         }
 
         const today = new Date();
-        const timeDiff = today.getTime() - LAUNCH_DATE.getTime();
-        const dayIndex = Math.floor(timeDiff / (1000 * 60 * 60 * 24)); 
+        const dayIndex = getDayIndex(today);
         
-        // This will always get the first puzzle from the TEST_PUZZLE_DATA array for now
-        currentPuzzle = allPuzzles[dayIndex % allPuzzles.length];
+        // Load today's puzzle
+        const puzzleIndex = dayIndex % allPuzzlesData.length;
+        currentPuzzle = allPuzzlesData[puzzleIndex];
 
         renderPuzzle(currentPuzzle);
-        renderChances(); // Render the initial lightbulbs
+        renderChances(); 
 
     } catch (error) {
-        messageElement.textContent = "Fatal Error in game logic.";
-        console.error("Game Logic Error:", error);
+        messageElement.textContent = "Fatal Error fetching data. Is sequence_puzzles_600.json uploaded and correctly formatted?";
+        console.error("Fetch Error:", error);
     }
 }
 
-// --- 4. Rendering and UI Handlers ---
+// --- 5. Rendering and UI Handlers (Unchanged) ---
 
 function renderPuzzle(puzzle) {
-    // A. Display the 4 sequence numbers
     const sequenceTiles = sequenceDisplay.querySelectorAll('.tile:not(#guess-target)');
     sequenceTiles.forEach((tile, index) => {
         tile.textContent = puzzle.sequence_display[index];
     });
 
-    // B. Render the selectable options pool
     optionsPool.innerHTML = ''; 
     currentPuzzle.options_pool.forEach(option => {
         const tile = document.createElement('div');
@@ -116,7 +170,6 @@ function renderPuzzle(puzzle) {
         optionsPool.appendChild(tile);
     });
     
-    // Clear initial message
     messageElement.textContent = ``;
 }
 
@@ -158,11 +211,10 @@ function handleSubmit(event) {
     let feedbackClass = `feedback-${feedback.toLowerCase()}`;
     selectedTile.classList.remove('feedback-grey', 'feedback-gold', 'feedback-green');
     selectedTile.classList.add(feedbackClass);
-    selectedTile.removeEventListener('click', handleSubmit); // Prevent re-clicking
+    selectedTile.removeEventListener('click', handleSubmit); 
 
-    // Update UI and check win/loss conditions
     if (feedback === 'CORRECT') {
-        messageElement.textContent = "CORRECT! You solved today's sequence! Share your results!";
+        messageElement.textContent = "CORRECT! You solved this sequence! Share your results!";
         disableOptions();
         guessTarget.classList.add('feedback-green');
         guessTarget.textContent = guessValue;
@@ -182,20 +234,16 @@ function disableOptions() {
     document.querySelectorAll('.option-tile').forEach(t => t.removeEventListener('click', handleSubmit));
 }
 
-// --- 5. Event Listeners and Initialization ---
 
-// Connect the '?' icon to the tutorial
+// --- 6. Event Listeners and Initialization ---
+
+// Tutorial (Question Mark)
 rulesIcon.addEventListener('click', showTutorial);
 tutorialNextButton.addEventListener('click', handleTutorialNext);
 
-// Placeholder actions for other icons
-archiveIcon.addEventListener('click', () => {
-    alert("Archivist is a premium feature! (Placeholder)");
-});
-
-settingsIcon.addEventListener('click', () => {
-    alert("Settings: Hard mode coming soon! (Placeholder)"); 
-});
+// Archivist (Folder Icon)
+archiveIcon.addEventListener('click', showArchive);
+archiveCloseButton.addEventListener('click', closeArchive);
 
 // Optional: Give up flag
 document.getElementById('give-up-icon').addEventListener('click', () => {
