@@ -121,3 +121,217 @@ h2 {
 
 /* Selected option visual feedback */
 .option-tile:hover {
+    transform: scale(1.02);
+}
+
+/* 6. Lightbulb Indicators */
+#chance-indicators {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    font-size: 1.5em; /* Icon size */
+}
+
+.lightbulb-on {
+    color: gold; /* Yellow for active */
+}
+
+.lightbulb-off {
+    color: var(--color-text-light); /* Grey for used */
+}
+
+/* 7. Action Area (Hint/Flag) */
+#action-area {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding: 0 10px;
+}
+
+.action-icon {
+    font-size: 1.5em;
+    padding: 8px;
+    border-radius: 50%;
+    background-color: var(--color-background);
+}
+
+.flag {
+    color: var(--color-flag-red);
+}
+
+/* 8. Feedback Colors (Wordle-like) */
+
+.feedback-green { background-color: var(--color-green); color: white; }
+.feedback-gold { background-color: var(--color-gold); color: white; } /* Salmon/Coral color */
+.feedback-grey { background-color: var(--color-grey); color: white; }
+
+
+/* --- 9. Refined HELP/ARCHIVE MODAL STYLING (CRITICAL OVERLAY CSS) --- */
+
+.modal {
+    display: none; /* IMPORTANT: Hidden by default. JS shows it */
+    position: fixed !important; /* CRITICAL FIX: Forces the overlay position */
+    z-index: 1000 !important; /* CRITICAL FIX: Ensures it's above everything else */
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.6); /* Semi-transparent overlay */
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: var(--color-white);
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.help-panel {
+    padding: 30px;
+    width: 90%;
+    max-width: 550px; 
+    text-align: left; 
+}
+
+.help-panel h2 {
+    text-align: center;
+    font-size: 1.8em;
+    margin-bottom: 25px;
+}
+
+.help-section {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: var(--color-background); 
+    border-radius: 8px;
+}
+
+.help-icon {
+    font-size: 1.6em;
+    color: var(--color-blue-action);
+    margin-right: 15px;
+    padding-top: 5px;
+}
+
+.help-icon.salmon {
+    color: var(--color-gold); 
+}
+
+.help-icon.green {
+    color: var(--color-green);
+}
+
+.help-text h3 {
+    margin: 0 0 5px 0;
+    font-size: 1.1em;
+    font-weight: 700;
+}
+
+.help-text p {
+    margin: 0;
+    font-size: 0.9em;
+    color: var(--color-text-dark);
+}
+
+.help-panel ul {
+    margin: 5px 0 0 0;
+    padding-left: 20px;
+    font-size: 0.9em;
+}
+
+.got-it-button {
+    background-color: var(--color-flag-red); 
+    color: white;
+    padding: 10px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1em;
+    display: block;
+    width: 100%;
+    margin-top: 25px;
+    text-align: center;
+}
+
+/* --- Archivist Modal Styles --- */
+
+.archive-panel {
+    padding: 30px;
+    width: 90%;
+    max-width: 550px; 
+    max-height: 80vh; 
+    overflow-y: auto; 
+    text-align: center;
+}
+
+.archive-panel h2 {
+    font-size: 1.6em;
+    margin-bottom: 5px;
+}
+
+.archive-info {
+    color: var(--color-text-light);
+    font-size: 0.9em;
+    margin-bottom: 20px;
+}
+
+#puzzle-history-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Responsive grid for puzzle buttons */
+    gap: 10px;
+    padding: 10px 0;
+    border-top: 1px solid var(--color-background);
+    border-bottom: 1px solid var(--color-background);
+    margin-bottom: 20px;
+}
+
+.archive-puzzle-button {
+    background-color: var(--color-background);
+    color: var(--color-text-dark);
+    padding: 10px 5px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 600;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.archive-puzzle-button:hover {
+    background-color: #e0e0e0;
+    transform: translateY(-1px);
+}
+
+
+/* 10. Mobile Responsiveness */
+@media (max-width: 600px) {
+    
+    #game-container {
+        max-width: 100%;
+        padding: 10px;
+        margin: 0 5px; 
+    }
+
+    .tile {
+        width: 40px; 
+        height: 40px;
+        line-height: 40px;
+        font-size: 1.0em; 
+        border-radius: 6px; 
+        flex-grow: 1; 
+    }
+    
+    .sequence, .options {
+        gap: 5px;
+    }
+
+    #global-header h1 {
+        font-size: 1.8em;
+    }
+}
