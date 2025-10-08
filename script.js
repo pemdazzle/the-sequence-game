@@ -4,7 +4,9 @@
 const LAUNCH_DATE = new Date('2025-10-01'); // Game launch date for daily puzzle calculation
 const PUZZLE_FILE = './sequence_puzzles_600.json'; // Path to your data file
 let currentPuzzle = null;
-let selectedOption = null;
+let selectedOptionValue = null;
+let guesses = []; // To track history: [{value: 25, feedback: 'GREY'}, ...]
+const MAX_GUESSES = 3; 
 
 // DOM Elements
 const optionsPool = document.getElementById('options-pool');
@@ -12,12 +14,12 @@ const sequenceDisplay = document.getElementById('sequence-display');
 const submitButton = document.getElementById('submit-guess');
 const guessTarget = document.getElementById('guess-target');
 const messageElement = document.getElementById('message');
+const feedbackHistory = document.getElementById('feedback-history');
 
 // --- 2. Data Fetching and Puzzle Selection ---
 
 async function loadDailyPuzzle() {
     try {
-        // Fetch the full puzzle JSON file
         const response = await fetch(PUZZLE_FILE);
         const allPuzzles = await response.json();
         
@@ -29,12 +31,10 @@ async function loadDailyPuzzle() {
         // Calculate the current day's index (0-599 for a 600-day array)
         const today = new Date();
         const timeDiff = today.getTime() - LAUNCH_DATE.getTime();
-        const dayIndex = Math.floor(timeDiff / (1000 * 60 * 60 * 24)); // Days since launch
+        const dayIndex = Math.floor(timeDiff / (1000 * 60 * 60 * 24)); 
         
-        // Use the modulo operator to loop the puzzles after 600 days
         currentPuzzle = allPuzzles[dayIndex % allPuzzles.length];
 
-        // Now that the puzzle is loaded, render the interface
         renderPuzzle(currentPuzzle);
 
     } catch (error) {
@@ -46,68 +46,100 @@ async function loadDailyPuzzle() {
 // --- 3. Rendering and UI Handlers ---
 
 function renderPuzzle(puzzle) {
-    // A. Display the 4 sequence numbers (HTML already has placeholders)
+    // A. Display the 4 sequence numbers
     const sequenceTiles = sequenceDisplay.querySelectorAll('.tile:not(#guess-target)');
     sequenceTiles.forEach((tile, index) => {
         tile.textContent = puzzle.sequence_display[index];
     });
 
     // B. Render the selectable options pool
-    optionsPool.innerHTML = ''; // Clear previous options
+    optionsPool.innerHTML = ''; 
     puzzle.options_pool.forEach(option => {
         const tile = document.createElement('div');
         tile.classList.add('tile', 'option-tile');
         tile.textContent = option.value;
-        tile.dataset.value = option.value; // Store the number
+        tile.dataset.value = option.value; 
         tile.addEventListener('click', handleOptionSelect);
         optionsPool.appendChild(tile);
+    });
+    
+    // Set initial message
+    messageElement.textContent = `You have ${MAX_GUESSES} attempts remaining.`;
+}
+
+function renderFeedbackHistory() {
+    feedbackHistory.innerHTML = '';
+    guesses.forEach(guess => {
+        const row = document.createElement('div');
+        row.classList.add('feedback-row');
+        
+        const square = document.createElement('div');
+        square.classList.add('tile', `feedback-${guess.feedback.toLowerCase()}`);
+        square.style.width = '20px'; // Make history squares smaller
+        square.style.height = '20px';
+        square.style.lineHeight = '20px';
+        square.style.marginRight = '5px';
+        
+        row.appendChild(square);
+        feedbackHistory.appendChild(row);
     });
 }
 
 function handleOptionSelect(event) {
-    // Clear previous selection highlight
+    // 1. Clear previous selection highlight
     document.querySelectorAll('.option-tile').forEach(t => t.classList.remove('selected'));
     
-    // Set new selection
-    selectedOption = event.target.dataset.value;
+    // 2. Set new selection
+    selectedOptionValue = event.target.dataset.value;
     event.target.classList.add('selected');
-    guessTarget.textContent = selectedOption;
+    guessTarget.textContent = selectedOptionValue;
     submitButton.disabled = false; // Enable the submit button
+    messageElement.textContent = `Selected: ${selectedOptionValue}`;
 }
 
 function handleSubmit() {
-    if (!selectedOption) return;
+    if (!selectedOptionValue || guesses.length >= MAX_GUESSES) return;
 
+    const guessValue = parseInt(selectedOptionValue);
+    
     // Find the option object that matches the selected value
-    const guessValue = parseInt(selectedOption);
     const optionObj = currentPuzzle.options_pool.find(opt => opt.value === guessValue);
     
-    // Apply feedback color
-    let feedbackClass = 'feedback-grey'; // Default to GREY
-
+    // Determine feedback
+    let feedback = 'NO_MATCH'; // Defaults to GREY
+    
     if (optionObj) {
-        if (optionObj.feedback === 'CORRECT') {
-            feedbackClass = 'feedback-green';
-            messageElement.textContent = "CORRECT! Great job!";
-            // Optional: Disable all input after correct guess
-            submitButton.disabled = true; 
-        } else if (optionObj.feedback === 'RULE_MATCH') {
-            feedbackClass = 'feedback-gold';
-            messageElement.textContent = "GOLD! Close, but try the interwoven rule.";
-        } else {
-            messageElement.textContent = "Incorrect. Try again.";
-        }
-        
-        // Update the guess tile color
-        guessTarget.classList.remove('feedback-grey', 'feedback-gold', 'feedback-green');
-        guessTarget.classList.add(feedbackClass);
+        feedback = optionObj.feedback;
+    } 
 
-        // Reset selection for next guess attempt
-        selectedOption = null;
+    // Add to history
+    guesses.push({value: guessValue, feedback: feedback});
+
+    // Apply feedback color and message
+    let feedbackClass = `feedback-${feedback.toLowerCase()}`;
+    guessTarget.classList.remove('feedback-grey', 'feedback-gold', 'feedback-green');
+    guessTarget.classList.add(feedbackClass);
+    
+    // Update UI and check win/loss conditions
+    if (feedback === 'CORRECT') {
+        messageElement.textContent = "CORRECT! You solved today's sequence!";
         submitButton.disabled = true;
-        guessTarget.textContent = '?';
-        document.querySelectorAll('.option-tile').forEach(t => t.classList.remove('selected'));
+        // Optionally show confetti or a "Share" button here
+    } else if (guesses.length >= MAX_GUESSES) {
+        messageElement.textContent = `Game Over! The correct answer was ${currentPuzzle.correct_answer}.`;
+        submitButton.disabled = true;
+    } else if (feedback === 'RULE_MATCH') {
+        messageElement.textContent = `GOLD! Close, but try the interwoven rule. (${MAX_GUESSES - guesses.length} guesses left.)`;
+    } else {
+        messageElement.textContent = `Incorrect. Try again. (${MAX_GUESSES - guesses.length} guesses left.)`;
     }
+    
+    // Finalize UI state
+    renderFeedbackHistory();
+    selectedOptionValue = null;
+    submitButton.disabled = true;
+    guessTarget.textContent = '?';
+    document.querySelectorAll('.option-tile').forEach(t => t.classList.remove('selected'));
 }
 
 // --- 4. Event Listeners and Initialization ---
