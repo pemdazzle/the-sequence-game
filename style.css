@@ -168,12 +168,12 @@ h2 {
 .feedback-grey { background-color: var(--color-grey); color: white; }
 
 
-/* --- 9. Refined HELP/ARCHIVE MODAL STYLING (CRITICAL OVERLAY CSS) --- */
+/* --- 9. Refined HELP MODAL STYLING (CRITICAL OVERLAY CSS) --- */
 
 .modal {
     display: none; /* IMPORTANT: Hidden by default. JS shows it */
-    position: fixed !important; /* CRITICAL FIX: Forces the overlay position */
-    z-index: 1000 !important; /* CRITICAL FIX: Ensures it's above everything else */
+    position: fixed; /* CRITICAL: Stays in place, overlays everything */
+    z-index: 100; /* Sits on top */
     left: 0;
     top: 0;
     width: 100%; 
@@ -184,17 +184,14 @@ h2 {
     align-items: center;
 }
 
-.modal-content {
-    background-color: var(--color-white);
-    border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-}
-
 .help-panel {
     padding: 30px;
     width: 90%;
     max-width: 550px; 
     text-align: left; 
+    background-color: var(--color-white);
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
 }
 
 .help-panel h2 {
@@ -257,55 +254,6 @@ h2 {
     width: 100%;
     margin-top: 25px;
     text-align: center;
-}
-
-/* --- Archivist Modal Styles --- */
-
-.archive-panel {
-    padding: 30px;
-    width: 90%;
-    max-width: 550px; 
-    max-height: 80vh; 
-    overflow-y: auto; 
-    text-align: center;
-}
-
-.archive-panel h2 {
-    font-size: 1.6em;
-    margin-bottom: 5px;
-}
-
-.archive-info {
-    color: var(--color-text-light);
-    font-size: 0.9em;
-    margin-bottom: 20px;
-}
-
-#puzzle-history-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Responsive grid for puzzle buttons */
-    gap: 10px;
-    padding: 10px 0;
-    border-top: 1px solid var(--color-background);
-    border-bottom: 1px solid var(--color-background);
-    margin-bottom: 20px;
-}
-
-.archive-puzzle-button {
-    background-color: var(--color-background);
-    color: var(--color-text-dark);
-    padding: 10px 5px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.9em;
-    font-weight: 600;
-    transition: background-color 0.2s, transform 0.1s;
-}
-
-.archive-puzzle-button:hover {
-    background-color: #e0e0e0;
-    transform: translateY(-1px);
 }
 
 
