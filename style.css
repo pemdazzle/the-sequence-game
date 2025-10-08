@@ -278,3 +278,23 @@ h2 {
     margin-top: 25px;
     text-align: center;
 }
+/* Ensure this block is in your style.css */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* CRITICAL: Stays in place when scrolling */
+    z-index: 100; /* CRITICAL: Sits on top of everything else */
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.6); /* Semi-transparent overlay */
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    /* ... The white inner box styles */
+    background-color: var(--color-white);
+    /* ... */
+}
