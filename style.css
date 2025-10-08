@@ -51,7 +51,7 @@ body {
     justify-content: center;
     gap: 15px;
     margin-bottom: 20px;
-    color: var(--color-text-light);
+    color: var(--color-text-dark);
 }
 
 .icon {
@@ -130,7 +130,7 @@ h2 {
     justify-content: center;
     gap: 10px;
     margin-bottom: 15px;
-    font-size: 1.5em; /* Emoji size */
+    font-size: 1.5em; /* Icon size */
 }
 
 .lightbulb-on {
@@ -168,11 +168,93 @@ h2 {
 .feedback-grey { background-color: var(--color-grey); color: white; }
 
 
-/* 9. Tutorial Modal (Ensure it still works with new colors) */
+/* --- 9. Refined HELP MODAL STYLING (CRITICAL OVERLAY CSS) --- */
 
-.modal { background-color: rgba(0,0,0,0.7); }
-.modal-content { background-color: var(--color-white); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6); }
-#tutorial-next-button { background-color: var(--color-green); }
+.modal {
+    display: none; /* IMPORTANT: Hidden by default. JS shows it */
+    position: fixed; /* CRITICAL: Stays in place, overlays everything */
+    z-index: 100; /* Sits on top */
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.6); /* Semi-transparent overlay */
+    justify-content: center;
+    align-items: center;
+}
+
+.help-panel {
+    padding: 30px;
+    width: 90%;
+    max-width: 550px; 
+    text-align: left; 
+    background-color: var(--color-white);
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.help-panel h2 {
+    text-align: center;
+    font-size: 1.8em;
+    margin-bottom: 25px;
+}
+
+.help-section {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: var(--color-background); 
+    border-radius: 8px;
+}
+
+.help-icon {
+    font-size: 1.6em;
+    color: var(--color-blue-action);
+    margin-right: 15px;
+    padding-top: 5px;
+}
+
+.help-icon.salmon {
+    color: var(--color-gold); 
+}
+
+.help-icon.green {
+    color: var(--color-green);
+}
+
+.help-text h3 {
+    margin: 0 0 5px 0;
+    font-size: 1.1em;
+    font-weight: 700;
+}
+
+.help-text p {
+    margin: 0;
+    font-size: 0.9em;
+    color: var(--color-text-dark);
+}
+
+.help-panel ul {
+    margin: 5px 0 0 0;
+    padding-left: 20px;
+    font-size: 0.9em;
+}
+
+.got-it-button {
+    background-color: var(--color-flag-red); 
+    color: white;
+    padding: 10px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1em;
+    display: block;
+    width: 100%;
+    margin-top: 25px;
+    text-align: center;
+}
 
 
 /* 10. Mobile Responsiveness */
@@ -200,101 +282,4 @@ h2 {
     #global-header h1 {
         font-size: 1.8em;
     }
-}
-/* --- New Help Panel Specific Styles (PemDazzle Look) --- */
-
-.modal {
-    /* Ensure the modal always covers the screen on click */
-    display: none; 
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(0,0,0,0.6); /* Slightly lighter background shade */
-}
-
-.help-panel {
-    padding: 30px;
-    width: 90%;
-    max-width: 550px; /* Slightly wider than the game box */
-    text-align: left; /* Text aligns left inside the panel */
-}
-
-.help-panel h2 {
-    text-align: center;
-    font-size: 1.8em;
-    margin-bottom: 25px;
-}
-
-.help-section {
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 20px;
-    padding: 15px;
-    background-color: var(--color-background); /* Subtle gray background for each section */
-    border-radius: 8px;
-}
-
-.help-icon {
-    font-size: 1.6em;
-    color: var(--color-blue-action);
-    margin-right: 15px;
-    padding-top: 5px;
-}
-
-.help-icon.salmon {
-    color: var(--color-gold); /* Using the salmon color for the rule icon */
-}
-
-.help-icon.green {
-    color: var(--color-green);
-}
-
-.help-text h3 {
-    margin: 0 0 5px 0;
-    font-size: 1.1em;
-    font-weight: 700;
-}
-
-.help-text p {
-    margin: 0;
-    font-size: 0.9em;
-    color: var(--color-text-dark);
-}
-
-.help-panel ul {
-    margin: 5px 0 0 0;
-    padding-left: 20px;
-}
-
-.got-it-button {
-    background-color: var(--color-flag-red); /* Using the red/flag color for the "Got it!" button */
-    color: white;
-    padding: 10px 25px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1.1em;
-    display: block;
-    width: 100%;
-    margin-top: 25px;
-    text-align: center;
-}
-/* Ensure this block is in your style.css */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* CRITICAL: Stays in place when scrolling */
-    z-index: 100; /* CRITICAL: Sits on top of everything else */
-    left: 0;
-    top: 0;
-    width: 100%; 
-    height: 100%; 
-    overflow: auto; 
-    background-color: rgba(0,0,0,0.6); /* Semi-transparent overlay */
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    /* ... The white inner box styles */
-    background-color: var(--color-white);
-    /* ... */
 }
