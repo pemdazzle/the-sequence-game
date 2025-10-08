@@ -1,4 +1,4 @@
-// --- script.js: The Finalized Game Logic (RE-COMMITTING FOR SYNC) ---
+// --- script.js: The Finalized Game Logic ---
 
 // 1. Initial Setup and Constants
 const LAUNCH_DATE = new Date('2025-10-01');
@@ -6,6 +6,24 @@ const PUZZLE_FILE = './sequence_puzzles_600.json';
 let currentPuzzle = null;
 let guesses = [];
 const MAX_GUESSES = 3;
+
+// TEMPORARY: Injected puzzle data to bypass fetch issues and confirm rendering works
+const TEST_PUZZLE_DATA = [
+    {
+      "puzzle_id": 1,
+      "rule_type": "Interwoven",
+      "sequence_display": [10, 189, 17, 567],
+      "correct_answer": 25,
+      "options_pool": [
+        {"value": 25, "feedback": "CORRECT"},
+        {"value": 746, "feedback": "RULE_MATCH"},
+        {"value": 106, "feedback": "NO_MATCH"},
+        {"value": 1117, "feedback": "NO_MATCH"},
+        {"value": 24, "feedback": "NO_MATCH"},
+        {"value": -1, "feedback": "NO_MATCH"}
+      ]
+    }
+];
 
 // DOM Elements
 const optionsPool = document.getElementById('options-pool');
@@ -19,24 +37,16 @@ const rulesIcon = document.getElementById('rules-icon');
 const archiveIcon = document.getElementById('archive-icon');
 const settingsIcon = document.getElementById('settings-icon');
 
-// Tutorial DOM Elements (Used for the ? icon)
+// Tutorial DOM Elements
 const tutorialModal = document.getElementById('tutorial-modal');
-const tutorialTextBox = document.getElementById('tutorial-text-box');
 const tutorialNextButton = document.getElementById('tutorial-next-button');
-const tutorialSkipButton = document.getElementById('tutorial-skip-button');
 
-// --- TUTORIAL CONTENT (Content remains the same) ---
-// --- TUTORIAL CONTENT (Simplified for single-panel display) ---
-// This content is now largely structural HTML in index.html, 
-// but we keep the header for organizational consistency.
-// The TUTORIAL_STEPS array is no longer used by the display logic.
 
 // --- 2. Tutorial Logic (for '?' Icon) ---
 // Simplified logic to just show/hide the single modal panel.
 
 function showTutorial() {
-    tutorialModal.style.display = 'flex'; // Show the modal
-    // No need to track steps
+    tutorialModal.style.display = 'flex'; // Show the modal overlay
 }
 
 function closeTutorial() {
@@ -44,17 +54,11 @@ function closeTutorial() {
     localStorage.setItem('hasSeenTutorial', 'true');
 }
 
-// Rename this function to reflect its new purpose (closing the panel)
+// Button now just closes the help panel
 function handleTutorialNext() {
     closeTutorial();
 }
 
-// ... the rest of the script.js file continues from here ...
-    } else {
-        tutorialStep++;
-        updateTutorialStep();
-    }
-}
 
 // --- 3. Data Fetching and Puzzle Selection ---
 
@@ -65,12 +69,14 @@ async function loadDailyPuzzle() {
     }
     
     try {
-        const response = await fetch(PUZZLE_FILE);
-        const allPuzzles = await response.json();
-        
-        // **CRITICAL CHECK ADDED:** Ensure the fetched data is an array
+        // *** TEMPORARY OVERRIDE ***
+        // const response = await fetch(PUZZLE_FILE); 
+        // const allPuzzles = await response.json(); 
+        const allPuzzles = TEST_PUZZLE_DATA; // Use hardcoded data for reliable testing
+        // **************************
+
         if (!Array.isArray(allPuzzles) || allPuzzles.length === 0) {
-             messageElement.textContent = "Error: Puzzle data is missing or corrupted. Check sequence_puzzles_600.json.";
+             messageElement.textContent = "Error: Puzzle data is missing or corrupted.";
              return;
         }
 
@@ -78,14 +84,15 @@ async function loadDailyPuzzle() {
         const timeDiff = today.getTime() - LAUNCH_DATE.getTime();
         const dayIndex = Math.floor(timeDiff / (1000 * 60 * 60 * 24)); 
         
+        // This will always get the first puzzle from the TEST_PUZZLE_DATA array for now
         currentPuzzle = allPuzzles[dayIndex % allPuzzles.length];
 
         renderPuzzle(currentPuzzle);
         renderChances(); // Render the initial lightbulbs
 
     } catch (error) {
-        messageElement.textContent = "Fatal Error fetching data. Is sequence_puzzles_600.json uploaded and named correctly?";
-        console.error("Fetch Error:", error);
+        messageElement.textContent = "Fatal Error in game logic.";
+        console.error("Game Logic Error:", error);
     }
 }
 
@@ -98,14 +105,13 @@ function renderPuzzle(puzzle) {
         tile.textContent = puzzle.sequence_display[index];
     });
 
-    // B. Render the selectable options pool (Distractors and correct answer loading here)
+    // B. Render the selectable options pool
     optionsPool.innerHTML = ''; 
     currentPuzzle.options_pool.forEach(option => {
         const tile = document.createElement('div');
         tile.classList.add('tile', 'option-tile');
         tile.textContent = option.value;
         tile.dataset.value = option.value; 
-        // Guess is now submitted on click (No Submit Button needed)
         tile.addEventListener('click', handleSubmit); 
         optionsPool.appendChild(tile);
     });
@@ -121,7 +127,6 @@ function renderChances() {
     for (let i = 0; i < MAX_GUESSES; i++) {
         const span = document.createElement('span');
         span.classList.add('lightbulb');
-        // Font Awesome lightbulb icon
         span.innerHTML = '<i class="fas fa-lightbulb"></i>'; 
         
         if (i < remaining) {
@@ -137,7 +142,6 @@ function renderChances() {
 function handleSubmit(event) {
     if (guesses.length >= MAX_GUESSES) return;
 
-    // The selected tile IS the event target
     const selectedTile = event.currentTarget;
     const guessValue = parseInt(selectedTile.dataset.value);
 
@@ -148,11 +152,9 @@ function handleSubmit(event) {
         feedback = optionObj.feedback;
     } 
 
-    // Add to history and update chances
     guesses.push({value: guessValue, feedback: feedback});
     renderChances(); 
 
-    // Visual feedback on the selected tile (GREEN, GOLD, GREY)
     let feedbackClass = `feedback-${feedback.toLowerCase()}`;
     selectedTile.classList.remove('feedback-grey', 'feedback-gold', 'feedback-green');
     selectedTile.classList.add(feedbackClass);
@@ -167,16 +169,13 @@ function handleSubmit(event) {
     } else if (guesses.length >= MAX_GUESSES) {
         messageElement.textContent = `Game Over! The correct answer was ${currentPuzzle.correct_answer}.`;
         disableOptions();
-        guessTarget.classList.add('feedback-grey'); // Indicate failed puzzle
+        guessTarget.classList.add('feedback-grey'); 
         guessTarget.textContent = currentPuzzle.correct_answer;
     } else if (feedback === 'RULE_MATCH') {
         messageElement.textContent = "GOLD! Close, but try the interwoven rule.";
     } else {
         messageElement.textContent = "Incorrect. Try again.";
     }
-    
-    // Finalize UI state
-    
 }
 
 function disableOptions() {
@@ -188,7 +187,6 @@ function disableOptions() {
 // Connect the '?' icon to the tutorial
 rulesIcon.addEventListener('click', showTutorial);
 tutorialNextButton.addEventListener('click', handleTutorialNext);
-tutorialSkipButton.addEventListener('click', closeTutorial);
 
 // Placeholder actions for other icons
 archiveIcon.addEventListener('click', () => {
@@ -196,7 +194,6 @@ archiveIcon.addEventListener('click', () => {
 });
 
 settingsIcon.addEventListener('click', () => {
-    // In a final game, this would toggle hard mode/dark theme
     alert("Settings: Hard mode coming soon! (Placeholder)"); 
 });
 
