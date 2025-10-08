@@ -1,90 +1,227 @@
-// --- Puzzle Generator for Sequence Game ---
-// This script generates a large JSON file of puzzles for the game.
-// To run: node generator.js > puzzles.json
+[
+  {
+    "puzzle_id": 1,
+    "sequence_display": [ 5, 11, 17, 28 ],
+    "distractor_value": 28,
+    "main_sequence": [ 5, 11, 17 ],
+    "correct_answer": 23,
+    "rule_type": "Arithmetic",
+    "rule_description": "The pattern adds 6 to the previous number.",
+    "options_pool": [
+      { "value": 23, "feedback": "CORRECT" }, { "value": 31, "feedback": "NO_MATCH" },
+      { "value": 15, "feedback": "NO_MATCH" }, { "value": 29, "feedback": "NO_MATCH" },
+      { "value": 17, "feedback": "NO_MATCH" }, { "value": 11, "feedback": "NO_MATCH" }
+    ]
+  },
+  {
+    "puzzle_id": 2,
+    "sequence_display": [ 92, 85, 78, 64 ],
+    "distractor_value": 64,
+    "main_sequence": [ 92, 85, 78 ],
+    "correct_answer": 71,
+    "rule_type": "Arithmetic",
+    "rule_description": "The pattern subtracts 7 from the previous number.",
+    "options_pool": [
+      { "value": 71, "feedback": "CORRECT" }, { "value": 85, "feedback": "NO_MATCH" },
+      { "value": 57, "feedback": "NO_MATCH" }, { "value": 61, "feedback": "NO_MATCH" },
+      { "value": 90, "feedback": "NO_MATCH" }, { "value": 78, "feedback": "NO_MATCH" }
+    ]
+  },
+  {
+    "puzzle_id": 3,
+    "sequence_display": [ 4, 16, 8, 30 ],
+    "distractor_value": 30,
+    "main_sequence": [ 4, 8, 16 ],
+    "correct_answer": 32,
+    "rule_type": "Geometric",
+    "rule_description": "The pattern multiplies the previous number by 2.",
+    "options_pool": [
+      { "value": 32, "feedback": "CORRECT" }, { "value": 48, "feedback": "NO_MATCH" },
+      { "value": 22, "feedback": "NO_MATCH" }, { "value": 16, "feedback": "NO_MATCH" },
+      { "value": 42, "feedback": "NO_MATCH" }, { "value": 18, "feedback": "NO_MATCH" }
+    ]
+  },
+  {
+    "puzzle_id": 4,
+    "sequence_display": [ 400, 200, 100, 55 ],
+    "distractor_value": 55,
+    "main_sequence": [ 400, 200, 100 ],
+    "correct_answer": 50,
+    "rule_type": "Geometric",
+    "rule_description": "The pattern divides the previous number by 2.",
+    "options_pool": [
+      { "value": 50, "feedback": "CORRECT" }, { "value": 25, "feedback": "NO_MATCH" },
+      { "value": 150, "feedback": "NO_MATCH" }, { "value": 75, "feedback": "NO_MATCH" },
+      { "value": 60, "feedback": "NO_MATCH" }, { "value": 40, "feedback": "NO_MATCH" }
+    ]
+  },
+  {
+    "puzzle_id": 5,
+    "sequence_display": [ 7, 18, 29, 35 ],
+    "distractor_value": 35,
+    "main_sequence": [ 7, 18, 29 ],
+    "correct_answer": 40,
+    "rule_type": "Arithmetic",
+    "rule_description": "The pattern adds 11 to the previous number.",
+    "options_pool": [
+      { "value": 40, "feedback": "CORRECT" }, { "value": 51, "feedback": "NO_MATCH" },
+      { "value": 38, "feedback": "NO_MATCH" }, { "value": 42, "feedback": "NO_MATCH" },
+      { "value": 30, "feedback": "NO_MATCH" }, { "value": 33, "feedback": "NO_MATCH" }
+    ]
+  },
+  {
+    "puzzle_id": 6,
+    "sequence_display": [ 95, 80, 65, 55 ],
+    "distractor_value": 55,
+    "main_sequence": [ 95, 80, 65 ],
+    "correct_answer": 50,
+    "rule_type": "Arithmetic",
+    "rule_description": "The pattern subtracts 15 from the previous number.",
+    "options_pool": [
+      { "value": 50, "feedback": "CORRECT" }, { "value": 45, "feedback": "NO_MATCH" },
+      { "value": 60, "feedback": "NO_MATCH" }, { "value": 40, "feedback": "NO_MATCH" },
+      { "value": 35, "feedback": "NO_MATCH" }, { "value": 70, "feedback": "NO_MATCH" }
+    ]
+  },
+  {
+    "puzzle_id": 7,
+    "sequence_display": [ 3, 9, 27, 80 ],
+    "distractor_value": 80,
+    "main_sequence": [ 3, 9, 27 ],
+    "correct_answer": 81,
+    "rule_type": "Geometric",
+    "rule_description": "The pattern multiplies the previous number by 3.",
+    "options_pool": [
+      { "value": 81, "feedback": "CORRECT" }, { "value": 54, "feedback": "NO_MATCH" },
+      { "value": 30, "feedback": "NO_MATCH" }, { "value": 243, "feedback": "NO_MATCH" },
+      { "value": 72, "feedback": "NO_MATCH" }, { "value": 90, "feedback": "NO_MATCH" }
+    ]
+  },
+  {
+    "puzzle_id": 8,
+    "sequence_display": [ 243, 81, 27, 10 ],
+    "distractor_value": 10,
+    "main_sequence": [ 243, 81, 27 ],
+    "correct_answer": 9,
+    "rule_type": "Geometric",
+    "rule_description": "The pattern divides the previous number by 3.",
+    "options_pool": [
+      { "value": 9, "feedback": "CORRECT" }, { "value": 3, "feedback": "NO_MATCH" },
+      { "value": 18, "feedback": "NO_MATCH" }, { "value": 36, "feedback": "NO_MATCH" },
+      { "value": 1, "feedback": "NO_MATCH" }, { "value": 6, "feedback": "NO_MATCH" }
+    ]
+  },
+  {
+    "puzzle_id": 9,
+    "sequence_display": [ 12, 21, 30, 40 ],
+    "distractor_value": 40,
+    "main_sequence": [ 12, 21, 30 ],
+    "correct_answer": 39,
+    "rule_type": "Arithmetic",
+    "rule_description": "The pattern adds 9 to the previous number.",
+    "options_pool": [
+      { "value": 39, "feedback": "CORRECT" }, { "value": 48, "feedback": "NO_MATCH" },
+      { "value": 33, "feedback": "NO_MATCH" }, { "value": 41, "feedback": "NO_MATCH" },
+      { "value": 36, "feedback": "NO_MATCH" }, { "value": 45, "feedback": "NO_MATCH" }
+    ]
+  },
+  {
+    "puzzle_id": 10,
+    "sequence_display": [ 100, 91, 82, 70 ],
+    "distractor_value": 70,
+    "main_sequence": [ 100, 91, 82 ],
+    "correct_answer": 73,
+    "rule_type": "Arithmetic",
+    "rule_description": "The pattern subtracts 9 from the previous number.",
+    "options_pool": [
+      { "value": 73, "feedback": "CORRECT" }, { "value": 64, "feedback": "NO_MATCH" },
+      { "value": 72, "feedback": "NO_MATCH" }, { "value": 80, "feedback": "NO_MATCH" },
+      { "value": 69, "feedback": "NO_MATCH" }, { "value": 75, "feedback": "NO_MATCH" }
+    ]
+  },
+  {
+    "puzzle_id": 11,
+    "sequence_display": [ 2, 8, 32, 120 ],
+    "distractor_value": 120,
+    "main_sequence": [ 2, 8, 32 ],
+    "correct_answer": 128,
+    "rule_type": "Geometric",
+    "rule_description": "The pattern multiplies the previous number by 4.",
+    "options_pool": [
+      { "value": 128, "feedback": "CORRECT" }, { "value": 64, "feedback": "NO_MATCH" },
+      { "value": 256, "feedback": "NO_MATCH" }, { "value": 132, "feedback": "NO_MATCH" },
+      { "value": 100, "feedback": "NO_MATCH" }, { "value": 96, "feedback": "NO_MATCH" }
+    ]
+  },
+  {
+    "puzzle_id": 12,
+    "sequence_display": [ 320, 80, 20, 5 ],
+    "distractor_value": 5,
+    "main_sequence": [ 320, 80, 20 ],
+    "correct_answer": 5,
+    "rule_type": "Geometric",
+    "rule_description": "The pattern divides the previous number by 4.",
+    "options_pool": [
+      { "value": 5, "feedback": "CORRECT" }, { "value": 10, "feedback": "NO_MATCH" },
+      { "value": 1, "feedback": "NO_MATCH" }, { "value": 4, "feedback": "NO_MATCH" },
+      { "value": 15, "feedback": "NO_MATCH" }, { "value": 2.5, "feedback": "NO_MATCH" }
+    ]
+  },
+  {
+    "puzzle_id": 13,
+    "sequence_display": [ 1, 13, 25, 30 ],
+    "distractor_value": 30,
+    "main_sequence": [ 1, 13, 25 ],
+    "correct_answer": 37,
+    "rule_type": "Arithmetic",
+    "rule_description": "The pattern adds 12 to the previous number.",
+    "options_pool": [
+      { "value": 37, "feedback": "CORRECT" }, { "value": 49, "feedback": "NO_MATCH" },
+      { "value": 36, "feedback": "NO_MATCH" }, { "value": 38, "feedback": "NO_MATCH" },
+      { "value": 26, "feedback": "NO_MATCH" }, { "value": 42, "feedback": "NO_MATCH" }
+    ]
+  },
+  {
+    "puzzle_id": 14,
+    "sequence_display": [ 88, 77, 66, 50 ],
+    "distractor_value": 50,
+    "main_sequence": [ 88, 77, 66 ],
+    "correct_answer": 55,
+    "rule_type": "Arithmetic",
+    "rule_description": "The pattern subtracts 11 from the previous number.",
+    "options_pool": [
+      { "value": 55, "feedback": "CORRECT" }, { "value": 44, "feedback": "NO_MATCH" },
+      { "value": 60, "feedback": "NO_MATCH" }, { "value": 54, "feedback": "NO_MATCH" },
+      { "value": 56, "feedback": "NO_MATCH" }, { "value": 77, "feedback": "NO_MATCH" }
+    ]
+  },
+  {
+    "puzzle_id": 15,
+    "sequence_display": [ 5, 10, 20, 41 ],
+    "distractor_value": 41,
+    "main_sequence": [ 5, 10, 20 ],
+    "correct_answer": 40,
+    "rule_type": "Geometric",
+    "rule_description": "The pattern multiplies the previous number by 2.",
+    "options_pool": [
+      { "value": 40, "feedback": "CORRECT" }, { "value": 80, "feedback": "NO_MATCH" },
+      { "value": 30, "feedback": "NO_MATCH" }, { "value": 35, "feedback": "NO_MATCH" },
+      { "value": 25, "feedback": "NO_MATCH" }, { "value": 60, "feedback": "NO_MATCH" }
+    ]
+  },
+  {
+    "puzzle_id": 16,
+    "sequence_display": [ 486, 162, 54, 20 ],
+    "distractor_value": 20,
+    "main_sequence": [ 486, 162, 54 ],
+    "correct_answer": 18,
+    "rule_type": "Geometric",
+    "rule_description": "The pattern divides the previous number by 3.",
+    "options_pool": [
+      { "value": 18, "feedback": "CORRECT" }, { "value": 6, "feedback": "NO_MATCH" },
+      { "value": 27, "feedback": "NO_MATCH" }, { "value": 9, "feedback": "NO_MATCH" },
+      { "value": 12, "feedback": "NO_MATCH" }, { "value": 24, "feedback": "NO_MATCH" }
+    ]
+  }
+]
 
-const NUM_PUZZLES_TO_GENERATE = 730; // ~2 years of daily puzzles
-
-const ruleTemplates = [
-    { type: 'Arithmetic', operation: 'add', baseRange: [1, 10], stepRange: [2, 12] },
-    { type: 'Arithmetic', operation: 'subtract', baseRange: [50, 100], stepRange: [3, 15] },
-    { type: 'Geometric', operation: 'multiply', baseRange: [2, 5], stepRange: [2, 4] },
-    { type: 'Geometric', operation: 'divide', baseRange: [160, 480], stepRange: [2, 3] }
-];
-
-function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function generatePuzzle(puzzleId) {
-    const template = ruleTemplates[getRandomInt(0, ruleTemplates.length - 1)];
-
-    let base = getRandomInt(template.baseRange[0], template.baseRange[1]);
-    const step = getRandomInt(template.stepRange[0], template.stepRange[1]);
-
-    const main_sequence = [base];
-    let description = '';
-
-    for (let i = 0; i < 3; i++) {
-        switch (template.operation) {
-            case 'add':
-                base += step;
-                description = `The pattern adds ${step} to the previous number.`;
-                break;
-            case 'subtract':
-                base -= step;
-                description = `The pattern subtracts ${step} from the previous number.`;
-                break;
-            case 'multiply':
-                base *= step;
-                description = `The pattern multiplies the previous number by ${step}.`;
-                break;
-            case 'divide':
-                // Ensure clean division
-                base = Math.round(base / step);
-                description = `The pattern divides the previous number by ${step}.`;
-                break;
-        }
-        main_sequence.push(base);
-    }
-    
-    const correct_answer = main_sequence.pop();
-    
-    // Generate a distractor
-    const distractor_value = correct_answer + getRandomInt(-10, 10) * (getRandomInt(0, 1) ? 1 : -1) + step;
-    
-    const sequence_display = [...main_sequence, distractor_value].sort(() => Math.random() - 0.5);
-
-    // Generate options pool
-    const options_pool = [{ value: correct_answer, feedback: 'CORRECT' }];
-    const usedValues = new Set([correct_answer, distractor_value]);
-
-    while (options_pool.length < 6) {
-        const wrongOption = correct_answer + getRandomInt(-20, 20);
-        if (!usedValues.has(wrongOption)) {
-            options_pool.push({ value: wrongOption, feedback: 'NO_MATCH' });
-            usedValues.add(wrongOption);
-        }
-    }
-    
-    return {
-        puzzle_id: puzzleId,
-        sequence_display: sequence_display,
-        distractor_value: distractor_value,
-        main_sequence: main_sequence,
-        correct_answer: correct_answer,
-        rule_type: template.type,
-        rule_description: description,
-        options_pool: options_pool.sort(() => Math.random() - 0.5)
-    };
-}
-
-function generateAllPuzzles() {
-    const puzzles = [];
-    for (let i = 1; i <= NUM_PUZZLES_TO_GENERATE; i++) {
-        puzzles.push(generatePuzzle(i));
-    }
-    // The output of this log will be redirected to the file.
-    console.log(JSON.stringify(puzzles, null, 2));
-}
-
-generateAllPuzzles();
